@@ -1,0 +1,34 @@
+package com.sample;
+
+global QuestionCommunicator questionCommunicator;
+
+import org.drools.marshalling.impl.ProtobufMessages
+
+rule "Let the game begin"
+    when
+    then
+        System.out.println("So, it has begun...");
+
+        boolean logicalAnswer = questionCommunicator.createQuestion("Are you over 18 sweetheart?");
+
+        insert(new String("my presssiousssss"));
+        System.out.println(logicalAnswer);
+end
+
+rule "It's alive"
+    when s : String()
+    then
+        String textAnswer = questionCommunicator.createSelectOptionQuestion("What's your gender?", new String[] {"male", "female", "devil knows"});
+    	System.out.println(textAnswer);
+    	insert (new Integer(23));
+    end
+
+rule "And the story goes on and on and on..."
+    when i : Integer()
+    then
+        String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion("Co Cię boli, czy aż tak to cię boli, czy Rychu peja ma dziś szansę uczciwie zarobić?", new String[] {"główka", "paluszek", "pępuszek", "cycuszek"});
+    	for(String ans : compoundAnswer)
+    	{
+    		System.out.println(ans);
+    	}
+    end
