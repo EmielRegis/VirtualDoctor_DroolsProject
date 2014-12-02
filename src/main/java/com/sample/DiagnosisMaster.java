@@ -5,14 +5,10 @@ public class DiagnosisMaster extends Thread {
 	private boolean overEighteeen; 
 	private boolean chestPain = false;
 	private boolean stomachPain = false;
-	private boolean stuffiness = false;
+	private boolean stuffiness;
 	private boolean steppedUpBreath = false;
 	
-	public DiagnosisMaster(String sex, boolean overEighteeen) {
-		super();
-		this.sex = sex;
-		this.overEighteeen = overEighteeen;
-	}
+
 	public boolean isStomachPain() {
 		return stomachPain;
 	}
@@ -36,6 +32,18 @@ public class DiagnosisMaster extends Thread {
 	}
 	public void setStuffiness(boolean stuffiness) {
 		this.stuffiness = stuffiness;
+	}
+	public String getSex() {
+		return sex;
+	}
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+	public boolean isOverEighteeen() {
+		return overEighteeen;
+	}
+	public void setOverEighteeen(boolean overEighteeen) {
+		this.overEighteeen = overEighteeen;
 	}
 	
 }

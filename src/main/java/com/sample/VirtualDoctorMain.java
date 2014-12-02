@@ -51,6 +51,8 @@ public class VirtualDoctorMain {
 		final MainWindow frame = new MainWindow();
 		
 		final QuestionCommunicator qCom = new MedicalQuestionCommunicator();
+		
+		final DiagnosisMaster diagnosis = new DiagnosisMaster();
         
         qCom.setQuestionCommunicatorListener(new QuestionCommunicatorMessageListener() {
         	boolean isClicked;
@@ -289,17 +291,20 @@ public class VirtualDoctorMain {
 				     {
 				    	 try 
 					     {
+				    		 try {
 				    		 AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File("house_voice.wav"));
 				    		 Clip clip = AudioSystem.getClip();
 				    		 clip.open(audioIn);
 				    		 clip.start();
+				    		 } catch (Exception e){};
 				    		 
 				    		 
 				    		 KnowledgeBase kBase = readKnowledgeBase();
 					         kSession = kBase.newStatefulKnowledgeSession();
 					         KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(kSession, "test");           
 
-					         kSession.setGlobal("questionCommunicator", qCom);          
+					         kSession.setGlobal("questionCommunicator", qCom);
+					         kSession.setGlobal("diagnosis", diagnosis);
 					            
 					         kSession.fireAllRules();
 
