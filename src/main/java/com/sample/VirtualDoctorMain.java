@@ -266,6 +266,7 @@ public class VirtualDoctorMain {
 					}              		
             	});
             	
+            	
             	questionLabel.setText(message);
             	
            	 	while(!isClicked)
