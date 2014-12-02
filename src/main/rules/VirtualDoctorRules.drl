@@ -54,7 +54,7 @@ rule "Stuffiness"
 rule "StuffinessAfterSports"
     when d : DiagnosisMaster(d.isStuffiness() == Question.TRUE)
     then
-        d.setSportStuffiness(questionCommunicator.createQuestion("Are your breathing problems intensifying after doing sports?"));
+        d.setSportStuffiness(questionCommunicator.createQuestion("Do your breathing problems escalate after doing sports?"));
         update(d);
     end 
     
@@ -102,6 +102,8 @@ rule "Nausea" //nudnosci
 rule "Gastrologist"
     when d : DiagnosisMaster(d.isNausea() == Question.TRUE)
     then
+       	questionCommunicator.createNoCallbackNotification("Gastrologist");
+       	drools.halt();
         System.out.println("Gastrologist");
     end 
 
