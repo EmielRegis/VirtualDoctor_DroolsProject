@@ -14,11 +14,15 @@ import javax.swing.JTextPane;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
+import javax.swing.UIManager;
 
 public class MainWindow extends JFrame {
 
 	private JPanel contentPane;
 	public JPanel questionPanel;
+	public JPanel imagePanel;
+	public JButton startButton;
 
 //	/**
 //	 * Launch the application.
@@ -48,9 +52,11 @@ public class MainWindow extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JPanel panel = new JPanel();
-		panel.setBounds(531, 84, 393, 477);
-		contentPane.add(panel);
+		imagePanel = new JPanel();
+		imagePanel.setBackground(Color.WHITE);
+		imagePanel.setBounds(531, 84, 393, 477);
+		contentPane.add(imagePanel);
+		imagePanel.setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.WHITE);
@@ -59,17 +65,32 @@ public class MainWindow extends JFrame {
 		panel_1.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Virtual Medicine Doctor");
-		lblNewLabel.setBounds(385, 23, 191, 14);
+		lblNewLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
+		lblNewLabel.setBounds(358, 23, 267, 28);
 		panel_1.add(lblNewLabel);
 		
 		questionPanel = new JPanel();
-		questionPanel.setBounds(10, 84, 511, 393);
+		questionPanel.setBackground(Color.WHITE);
+		questionPanel.setBounds(10, 157, 511, 320);
 		contentPane.add(questionPanel);
 		questionPanel.setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel_3 = new JPanel();
+		panel_3.setBackground(Color.WHITE);
 		panel_3.setBounds(10, 488, 511, 73);
 		contentPane.add(panel_3);
 		panel_3.setLayout(null);
+		
+		startButton = new JButton("Start new diagnosis!");
+		startButton.setFont(new Font("SansSerif", Font.PLAIN, 17));
+		startButton.setBackground(new Color(51, 153, 255));
+		startButton.setForeground(Color.WHITE);
+		startButton.setBounds(148, 11, 212, 51);
+		panel_3.add(startButton);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		panel.setBounds(10, 84, 511, 62);
+		contentPane.add(panel);
 	}
 }
