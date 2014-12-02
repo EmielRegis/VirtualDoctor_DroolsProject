@@ -75,8 +75,6 @@ public class VirtualDoctorMain {
             	questionLabel.setBackground(Color.WHITE);
             	
             	frame.questionPanel.add(questionLabel, BorderLayout.CENTER);
-            	frame.questionPanel.add(yesButton, BorderLayout.WEST);
-            	frame.questionPanel.add(noButton, BorderLayout.EAST);
             	frame.questionPanel.revalidate();
             	frame.revalidate();
             	
