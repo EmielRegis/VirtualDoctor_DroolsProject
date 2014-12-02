@@ -14,16 +14,29 @@ rule "Init"
         String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion("Co Cię boli, czy aż tak to cię boli, czy Rychu peja ma dziś szansę uczciwie zarobić?", new String[] {"klatka", "brzuch"});
 		for(String ans : compoundAnswer) {
 			if( ans == "klatka") diagnosis.setChestPain(true);
+			if(ans == "brzuch") diagnosis.setStomachPain(true);
 			//if (ans == "brzuch")
 		}
 		insert(diagnosis);
 end
 
 rule "Chest"
-    when d : DiagnosisMaster(chestPain == true)
+    when d : DiagnosisMaster(chestPain)
     then
-        //String textAnswer = questionCommunicator.createSelectOptionQuestion("What's your gender?", new String[] {"male", "female", "devil knows"});
-    	System.out.println("boli mnie klata");
-    	//insert (new Integer(23));
+        d.setStuffiness(questionCommunicator.createQuestion("Czy masz uczucie duszności?"));
+        System.out.println(d.isStuffiness());
+        update(d);
     end
+ 
+rule "Stomach"
+	when d : DiagnosisMaster(stomachPain)
+	then
+		System.out.println("boli mnie brzuch");
+end
+
+rule "Stuffiness"
+	when d : DiagnosisMaster(stuffiness)
+	then
+		System.out.println("jedz suchary");
+end
 

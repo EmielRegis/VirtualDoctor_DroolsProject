@@ -4,6 +4,7 @@ public class DiagnosisMaster extends Thread {
 	private String sex;
 	private boolean overEighteeen; 
 	private boolean chestPain = false;
+	private boolean stomachPain = false;
 	private boolean stuffiness = false;
 	private boolean steppedUpBreath = false;
 	
@@ -11,6 +12,12 @@ public class DiagnosisMaster extends Thread {
 		super();
 		this.sex = sex;
 		this.overEighteeen = overEighteeen;
+	}
+	public boolean isStomachPain() {
+		return stomachPain;
+	}
+	public void setStomachPain(boolean stomachPain) {
+		this.stomachPain = stomachPain;
 	}
 	public boolean isSteppedUpBreath() {
 		return steppedUpBreath;
