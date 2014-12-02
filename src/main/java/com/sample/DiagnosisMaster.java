@@ -2,47 +2,48 @@ package com.sample;
 
 public class DiagnosisMaster extends Thread {
 	private String sex;
-	private Question overEighteeen = Question.NOT_ASKED; 
-	private Question chestPain = Question.NOT_ASKED;
-	private Question stomachPain = Question.NOT_ASKED;
-	private Question stuffiness = Question.NOT_ASKED;
-	private Question steppedUpBreath = Question.NOT_ASKED;
+	private boolean overEighteeen; 
+	private boolean chestPain = false;
+	private boolean stomachPain = false;
+	private boolean stuffiness;
+	private boolean steppedUpBreath = false;
 	
+
+	public boolean isStomachPain() {
+		return stomachPain;
+	}
+	public void setStomachPain(boolean stomachPain) {
+		this.stomachPain = stomachPain;
+	}
+	public boolean isSteppedUpBreath() {
+		return steppedUpBreath;
+	}
+	public void setSteppedUpBreath(boolean steppedUpBreath) {
+		this.steppedUpBreath = steppedUpBreath;
+	}
+	public boolean isChestPain() {
+		return chestPain;
+	}
+	public void setChestPain(boolean chestPain) {
+		this.chestPain = chestPain;
+	}
+	public boolean isStuffiness() {
+		return stuffiness;
+	}
+	public void setStuffiness(boolean stuffiness) {
+		this.stuffiness = stuffiness;
+	}
 	public String getSex() {
 		return sex;
 	}
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
-	public Question getOverEighteeen() {
+	public boolean isOverEighteeen() {
 		return overEighteeen;
 	}
-	public void setOverEighteeen(Question overEighteeen) {
+	public void setOverEighteeen(boolean overEighteeen) {
 		this.overEighteeen = overEighteeen;
-	}
-	public Question getChestPain() {
-		return chestPain;
-	}
-	public void setChestPain(Question chestPain) {
-		this.chestPain = chestPain;
-	}
-	public Question getStomachPain() {
-		return stomachPain;
-	}
-	public void setStomachPain(Question stomachPain) {
-		this.stomachPain = stomachPain;
-	}
-	public Question getStuffiness() {
-		return stuffiness;
-	}
-	public void setStuffiness(Question stuffiness) {
-		this.stuffiness = stuffiness;
-	}
-	public Question getSteppedUpBreath() {
-		return steppedUpBreath;
-	}
-	public void setSteppedUpBreath(Question steppedUpBreath) {
-		this.steppedUpBreath = steppedUpBreath;
 	}
 	
 }

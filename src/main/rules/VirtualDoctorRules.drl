@@ -36,9 +36,9 @@ end
 rule "Stuffiness"
     when d : DiagnosisMaster(chestPain)
     then
-    	System.out.println(d.isStuffiness());
+    	//System.out.println(d.isStuffiness());
         d.setStuffiness(questionCommunicator.createQuestion("Czy masz uczucie duszności?"));
-        System.out.println(d.isStuffiness());
+      //  System.out.println(d.isStuffiness());
         update(d);
     end
  
