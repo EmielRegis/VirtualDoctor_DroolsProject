@@ -5,6 +5,7 @@ package com.sample;
  */
 public interface QuestionCommunicatorMessageListener {
     public boolean processMessage (String message);
+    public void processNoCallbackMessage (String message);
     public String processSelectOptionMessage (String message, String[] options);
     public String[] processSelectOptionsMessage (String message, String[] options);
 }

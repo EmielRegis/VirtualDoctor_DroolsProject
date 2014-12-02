@@ -8,6 +8,7 @@ public interface QuestionCommunicator {
     public void setQuestionCommunicatorListener(QuestionCommunicatorMessageListener listener);
     public void removeCurrentListener();
     public boolean createQuestion(String message);
+    public void createNoCallbackNotification(String message);
     public String createSelectOptionQuestion(String message, String[] options);
     public String[] createSelectOptionsQuestion (String message, String[] options);
 }

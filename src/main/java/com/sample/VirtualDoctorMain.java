@@ -61,9 +61,36 @@ public class VirtualDoctorMain {
         	JCheckBox[] multipleSelectionOptions;
         	ArrayList<String> selectedAnswers;
         	
+        	@Override
+        	public void processNoCallbackMessage (String message)
+        	{
+        		message = "<html> " + message + "</html>";
+        		
+        		if(frame.questionPanel.getComponentCount() > 0)
+            	{
+            		frame.questionPanel.removeAll();
+            		frame.questionPanel.revalidate();
+            	}
+        		
+        		questionLabel = new JLabel(message);
+            	questionLabel.setHorizontalTextPosition(JLabel.CENTER);
+            	questionLabel.setHorizontalAlignment(JLabel.CENTER);
+            	questionLabel.setFont(new Font("Sans", Font.BOLD, 14));
+            	questionLabel.setBackground(Color.WHITE);
+            	
+            	frame.questionPanel.add(questionLabel, BorderLayout.CENTER);
+            	frame.questionPanel.add(yesButton, BorderLayout.WEST);
+            	frame.questionPanel.add(noButton, BorderLayout.EAST);
+            	frame.questionPanel.revalidate();
+            	frame.revalidate();
+            	
+            	questionLabel.setText(message);
+        	}
+        	
             @Override
             public boolean processMessage(String message) 
             {
+            	message = "<html> " + message + "</html>";
             	isClicked = false;
             	
             	if(frame.questionPanel.getComponentCount() > 0)
@@ -131,6 +158,7 @@ public class VirtualDoctorMain {
 			@Override
 			public String processSelectOptionMessage(String message, String[] options) 
 			{
+				message = "<html> " + message + "</html>";
 				isClicked = false;
 				
 				if(frame.questionPanel.getComponentCount() > 0)
@@ -220,6 +248,7 @@ public class VirtualDoctorMain {
 			@Override
 			public String[] processSelectOptionsMessage(String message, String[] options) 
 			{
+				message = "<html> " + message + "</html>";
 				isClicked = false;
 				selectedAnswers = new ArrayList<String>();
 				

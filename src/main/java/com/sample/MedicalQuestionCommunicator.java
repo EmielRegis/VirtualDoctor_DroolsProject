@@ -56,4 +56,13 @@ public class MedicalQuestionCommunicator implements QuestionCommunicator {
     		return null;
     	}
     }
+
+	@Override
+	public void createNoCallbackNotification(String message) 
+	{
+		if (questionCommunicatorMessageListener != null)
+    	{
+    		questionCommunicatorMessageListener.processNoCallbackMessage(message);
+    	}
+	}
 }
