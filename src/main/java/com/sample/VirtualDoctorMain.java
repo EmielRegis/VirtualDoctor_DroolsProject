@@ -5,13 +5,21 @@ package com.sample;
  */
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -36,7 +44,7 @@ public class VirtualDoctorMain {
         try 
         {
         	final MainWindow frame = new MainWindow();
-        	frame.setVisible(true);
+        	
       	
             // load up the knowledge base
             KnowledgeBase kBase = readKnowledgeBase();
@@ -44,6 +52,14 @@ public class VirtualDoctorMain {
             KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(kSession, "test");
 
             QuestionCommunicator qCom = new MedicalQuestionCommunicator();
+            
+            ImageIcon img = new ImageIcon("medicine_icon.png");
+            frame.setIconImage(img.getImage());
+            
+            BufferedImage myPicture = ImageIO.read(new File("house_1.jpg"));
+            JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+            frame.imagePanel.add(picLabel, BorderLayout.CENTER);
+            frame.revalidate();
 
             qCom.setQuestionCommunicatorListener(new QuestionCommunicatorMessageListener() {
             	boolean isClicked;
@@ -66,8 +82,19 @@ public class VirtualDoctorMain {
                 	}
                 	
                 	questionLabel = new JLabel(message);
+                	questionLabel.setHorizontalTextPosition(JLabel.CENTER);
+                	questionLabel.setHorizontalAlignment(JLabel.CENTER);
+                	questionLabel.setFont(new Font("Sans", Font.PLAIN, 14));
+                	questionLabel.setBackground(Color.WHITE);
+                	
                 	yesButton = new JButton("Yes");
                 	noButton = new JButton("No");
+                	yesButton.setBackground(new Color(30,220,30));
+                    yesButton.setForeground(Color.WHITE);
+                    yesButton.setFont(new Font("Sans", Font.PLAIN, 14));
+                    noButton.setBackground(new Color(220,30,30));
+                    noButton.setForeground(Color.WHITE);
+                    noButton.setFont(new Font("Sans", Font.PLAIN, 14));
                 	
                 	frame.questionPanel.add(questionLabel, BorderLayout.CENTER);
                 	frame.questionPanel.add(yesButton, BorderLayout.WEST);
@@ -112,17 +139,34 @@ public class VirtualDoctorMain {
                 	}
 					
 					questionLabel = new JLabel(message);
-					okButton = new JButton("Ok");
+					questionLabel.setHorizontalTextPosition(JLabel.CENTER);
+                	questionLabel.setHorizontalAlignment(JLabel.CENTER);
+                	questionLabel.setFont(new Font("Sans", Font.PLAIN, 14));
+                	questionLabel.setBackground(Color.WHITE);
+					
+					okButton = new JButton("Answer");
+					okButton.setBackground(new Color(30,30,220));
+                    okButton.setForeground(Color.WHITE);
+                    okButton.setFont(new Font("Sans", Font.PLAIN, 14));
+					
 					frame.questionPanel.add(questionLabel, BorderLayout.NORTH);
 					singleSelectionOptions = new JRadioButton[options.length];
 					ButtonGroup radiosGroup = new ButtonGroup();
 					JPanel optionsPanel = new JPanel();	
-					optionsPanel.setLayout(new FlowLayout());
+					optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.PAGE_AXIS));
+					optionsPanel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+					optionsPanel.setAlignmentY(JPanel.CENTER_ALIGNMENT);
+					optionsPanel.setBackground(Color.WHITE);
+					
 					
 					for(int i=0; i<options.length; i++)
 					{
 						singleSelectionOptions[i] = new JRadioButton();
 						singleSelectionOptions[i].setText(options[i]);
+						singleSelectionOptions[i].setAlignmentX(JRadioButton.CENTER_ALIGNMENT);
+						singleSelectionOptions[i].setAlignmentY(JRadioButton.CENTER_ALIGNMENT);
+						singleSelectionOptions[i].setFont(new Font("Sans", Font.PLAIN, 14));
+						singleSelectionOptions[i].setBackground(Color.WHITE);
 						radiosGroup.add(singleSelectionOptions[i]);
 						optionsPanel.add(singleSelectionOptions[i]);						
 					}
@@ -219,8 +263,9 @@ public class VirtualDoctorMain {
 
             kSession.setGlobal("questionCommunicator", qCom);
 
+            frame.setVisible(true);
+            
             kSession.fireAllRules();
-
             
 			frame.setVisible(true);
 
