@@ -71,7 +71,7 @@ public class MainWindow extends JFrame {
 		
 		questionPanel = new JPanel();
 		questionPanel.setBackground(Color.WHITE);
-		questionPanel.setBounds(10, 157, 511, 320);
+		questionPanel.setBounds(10, 157, 511, 276);
 		contentPane.add(questionPanel);
 		questionPanel.setLayout(new BorderLayout(0, 0));
 		

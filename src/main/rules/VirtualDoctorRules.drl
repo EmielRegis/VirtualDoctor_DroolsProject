@@ -10,7 +10,7 @@ rule "Init"
     then
         System.out.println("Initializiing...");
         boolean age = questionCommunicator.createQuestion("Are you over 18 sweetheart?");
-		String sex =  questionCommunicator.createSelectOptionQuestion("What's your gender?", new String[] {"male", "female", "devil knows"});
+		String sex =  questionCommunicator.createSelectOptionQuestion("What's your gender?", new String[] {"male", "female"});
 		diagnosis.setSex(sex);
 		diagnosis.setOverEighteeen(age);
         String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion("What hurts you? Where does it hurt you?", new String[] {"chest", "stomach"});
@@ -19,6 +19,13 @@ rule "Init"
 		}
 		insert(diagnosis);
 end
+
+rule "End"
+	salience(10000000)
+	when dbl : Double()
+	then
+		drools.halt();
+	end
 
 rule "Chest"
 	when s: String(s == "chest")

@@ -49,8 +49,8 @@ public class VirtualDoctorMain {
 	public static void main(String[] args) {
 		final MainWindow frame = new MainWindow();
 		
-		final QuestionCommunicator qCom = new MedicalQuestionCommunicator();		
-        
+		final QuestionCommunicator qCom = new MedicalQuestionCommunicator();
+		        
         qCom.setQuestionCommunicatorListener(new QuestionCommunicatorMessageListener() {
         	boolean isClicked;
         	boolean answer;
@@ -320,6 +320,7 @@ public class VirtualDoctorMain {
 		
 		ImageIcon img = new ImageIcon("medicine_icon.png");
         frame.setIconImage(img.getImage());
+        frame.setTitle("Virtual Medicine Doctor - at your service!");
         
         BufferedImage myPicture;
 		try 
@@ -332,9 +333,5 @@ public class VirtualDoctorMain {
         
         frame.revalidate();        
         frame.setVisible(true);
-    }
-
-    
-    
-     
+    }    
 }
