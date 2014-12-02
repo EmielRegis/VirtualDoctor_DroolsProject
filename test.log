@@ -1,66 +1,43 @@
 <object-stream>
 <org.drools.audit.event.ActivationLogEvent>
   <type>4</type>
-  <activationId>Let the game begin [0]</activationId>
-  <rule>Let the game begin</rule>
+  <activationId>Init [0]</activationId>
+  <rule>Init</rule>
   <declarations></declarations>
 </org.drools.audit.event.ActivationLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>6</type>
-  <activationId>Let the game begin [0]</activationId>
-  <rule>Let the game begin</rule>
+  <activationId>Init [0]</activationId>
+  <rule>Init</rule>
   <declarations></declarations>
 </org.drools.audit.event.ActivationLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>4</type>
-  <activationId>It&apos;s alive [1]</activationId>
-  <rule>It&apos;s alive</rule>
-  <declarations>s=my presssiousssss(1)</declarations>
+  <activationId>Chest [1]</activationId>
+  <rule>Chest</rule>
+  <declarations>d=Thread[Thread-0,5,main](1)</declarations>
 </org.drools.audit.event.ActivationLogEvent>
 <org.drools.audit.event.ObjectLogEvent>
   <type>1</type>
   <factId>1</factId>
-  <objectToString>my presssiousssss</objectToString>
+  <objectToString>Thread[Thread-0,5,main]</objectToString>
 </org.drools.audit.event.ObjectLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>7</type>
-  <activationId>Let the game begin [0]</activationId>
-  <rule>Let the game begin</rule>
+  <activationId>Init [0]</activationId>
+  <rule>Init</rule>
   <declarations></declarations>
 </org.drools.audit.event.ActivationLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>6</type>
-  <activationId>It&apos;s alive [1]</activationId>
-  <rule>It&apos;s alive</rule>
-  <declarations>s=my presssiousssss(1)</declarations>
-</org.drools.audit.event.ActivationLogEvent>
-<org.drools.audit.event.ActivationLogEvent>
-  <type>4</type>
-  <activationId>And the story goes on and on and on... [2]</activationId>
-  <rule>And the story goes on and on and on...</rule>
-  <declarations>i=23(2)</declarations>
-</org.drools.audit.event.ActivationLogEvent>
-<org.drools.audit.event.ObjectLogEvent>
-  <type>1</type>
-  <factId>2</factId>
-  <objectToString>23</objectToString>
-</org.drools.audit.event.ObjectLogEvent>
-<org.drools.audit.event.ActivationLogEvent>
-  <type>7</type>
-  <activationId>It&apos;s alive [1]</activationId>
-  <rule>It&apos;s alive</rule>
-  <declarations>s=my presssiousssss(1)</declarations>
-</org.drools.audit.event.ActivationLogEvent>
-<org.drools.audit.event.ActivationLogEvent>
-  <type>6</type>
-  <activationId>And the story goes on and on and on... [2]</activationId>
-  <rule>And the story goes on and on and on...</rule>
-  <declarations>i=23(2)</declarations>
+  <activationId>Chest [1]</activationId>
+  <rule>Chest</rule>
+  <declarations>d=Thread[Thread-0,5,main](1)</declarations>
 </org.drools.audit.event.ActivationLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>7</type>
-  <activationId>And the story goes on and on and on... [2]</activationId>
-  <rule>And the story goes on and on and on...</rule>
-  <declarations>i=23(2)</declarations>
+  <activationId>Chest [1]</activationId>
+  <rule>Chest</rule>
+  <declarations>d=Thread[Thread-0,5,main](1)</declarations>
 </org.drools.audit.event.ActivationLogEvent>
 </object-stream>
