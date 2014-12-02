@@ -1,6 +1,7 @@
 package com.sample;
 
 global QuestionCommunicator questionCommunicator;
+global DiagnosisMaster diagnosis;
 
 import org.drools.marshalling.impl.ProtobufMessages
 
@@ -10,31 +11,44 @@ rule "Init"
         System.out.println("Initializiing...");
         boolean age = questionCommunicator.createQuestion("Are you over 18 sweetheart?");
 		String sex =  questionCommunicator.createSelectOptionQuestion("What's your gender?", new String[] {"male", "female", "devil knows"});
-		DiagnosisMaster diagnosis = new DiagnosisMaster(sex, age); 
+		diagnosis.setSex(sex);
+		diagnosis.setOverEighteeen(age);
         String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion("Co Cię boli, czy aż tak to cię boli, czy Rychu peja ma dziś szansę uczciwie zarobić?", new String[] {"klatka", "brzuch"});
-		for(String ans : compoundAnswer) {
-			if( ans == "klatka") diagnosis.setChestPain(true);
-			if(ans == "brzuch") diagnosis.setStomachPain(true);
-			//if (ans == "brzuch")
+		for(String ans : compoundAnswer) {	
+			insert(ans);
 		}
 		insert(diagnosis);
 end
-
 rule "Chest"
+	when s: String(s == "klatka")
+	then
+		diagnosis.setChestPain(true);
+		update(diagnosis);
+end
+
+rule "Stomach"
+	when s: String(s == "brzuch")
+	then
+		diagnosis.setStomachPain(true);
+end
+
+
+rule "Stuffiness"
     when d : DiagnosisMaster(chestPain)
     then
+    	System.out.println(d.isStuffiness());
         d.setStuffiness(questionCommunicator.createQuestion("Czy masz uczucie duszności?"));
         System.out.println(d.isStuffiness());
         update(d);
     end
  
-rule "Stomach"
+rule "Stomacha"
 	when d : DiagnosisMaster(stomachPain)
 	then
 		System.out.println("boli mnie brzuch");
 end
 
-rule "Stuffiness"
+rule "Stuffinessa"
 	when d : DiagnosisMaster(stuffiness)
 	then
 		System.out.println("jedz suchary");

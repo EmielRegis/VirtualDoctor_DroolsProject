@@ -13,14 +13,19 @@
 </org.drools.audit.event.ActivationLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>4</type>
-  <activationId>Chest [1]</activationId>
-  <rule>Chest</rule>
-  <declarations>d=Thread[Thread-0,5,main](1)</declarations>
+  <activationId>CChest [1]</activationId>
+  <rule>CChest</rule>
+  <declarations>a=klatka(1)</declarations>
 </org.drools.audit.event.ActivationLogEvent>
 <org.drools.audit.event.ObjectLogEvent>
   <type>1</type>
   <factId>1</factId>
-  <objectToString>Thread[Thread-0,5,main]</objectToString>
+  <objectToString>klatka</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>2</factId>
+  <objectToString>Thread[Thread-2,6,main]</objectToString>
 </org.drools.audit.event.ObjectLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>7</type>
@@ -30,14 +35,14 @@
 </org.drools.audit.event.ActivationLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>6</type>
-  <activationId>Chest [1]</activationId>
-  <rule>Chest</rule>
-  <declarations>d=Thread[Thread-0,5,main](1)</declarations>
+  <activationId>CChest [1]</activationId>
+  <rule>CChest</rule>
+  <declarations>a=klatka(1)</declarations>
 </org.drools.audit.event.ActivationLogEvent>
 <org.drools.audit.event.ActivationLogEvent>
   <type>7</type>
-  <activationId>Chest [1]</activationId>
-  <rule>Chest</rule>
-  <declarations>d=Thread[Thread-0,5,main](1)</declarations>
+  <activationId>CChest [1]</activationId>
+  <rule>CChest</rule>
+  <declarations>a=klatka(1)</declarations>
 </org.drools.audit.event.ActivationLogEvent>
 </object-stream>
