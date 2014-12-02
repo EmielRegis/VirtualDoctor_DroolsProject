@@ -7,9 +7,13 @@ public class DiagnosisMaster extends Thread {
 	private Question stomachPain = Question.NOT_ASKED;
 	private Question stuffiness = Question.NOT_ASKED;
 	private Question sportStuffiness = Question.NOT_ASKED;
+	private Question bloodPressure = Question.NOT_ASKED;
 	private Question steppedUpBreath = Question.NOT_ASKED;
+	private Question abdomen = Question.NOT_ASKED;
+	private Question meal = Question.NOT_ASKED;
+	private Question nausea = Question.NOT_ASKED;
+	private Question voiding = Question.NOT_ASKED;
 	
-
 	public Question isStomachPain() {
 		return stomachPain;
 	}
@@ -40,6 +44,12 @@ public class DiagnosisMaster extends Thread {
 	public Question isStuffiness() {
 		return stuffiness;
 	}
+	public void setStuffiness(boolean stuffiness) {
+		if(stuffiness) {
+			this.stuffiness = Question.TRUE;
+		}
+		else this.stuffiness = Question.FALSE;
+	}
 	public void setSportStuffiness(boolean sportStuffiness) {
 		if(sportStuffiness) {
 			this.sportStuffiness = Question.TRUE;
@@ -49,11 +59,14 @@ public class DiagnosisMaster extends Thread {
 	public Question isSportStuffiness() {
 		return sportStuffiness;
 	}
-	public void setStuffiness(boolean stuffiness) {
-		if(stuffiness) {
-			this.stuffiness = Question.TRUE;
+	public void setBloodPressure(boolean bloodPressure) {
+		if(bloodPressure) {
+			this.bloodPressure = Question.TRUE;
 		}
-		else this.stuffiness = Question.FALSE;
+		else this.bloodPressure = Question.FALSE;
+	}
+	public Question isBloodPressure() {
+		return bloodPressure;
 	}
 	public String getSex() {
 		return sex;
@@ -70,5 +83,42 @@ public class DiagnosisMaster extends Thread {
 		}
 		else this.overEighteeen = Question.FALSE;
 	}
+	public Question isAbdomen() {
+		return abdomen;
+	}
+	public void setAbdomen(boolean abdomen) {
+		if(abdomen) {
+			this.abdomen = Question.TRUE;
+		}
+		else this.abdomen = Question.FALSE;
+	}
+	public Question isMeal() {
+		return meal;
+	}
+	public void setMeal(boolean meal) {
+		if(meal) {
+			this.meal = Question.TRUE;
+		}
+		else this.meal = Question.FALSE;
+	}
+	public Question isNausea() {
+		return nausea;
+	}
+	public void setNausea(boolean nausea) {
+		if(nausea) {
+			this.nausea = Question.TRUE;
+		}
+		else this.nausea = Question.FALSE;
+	}
+	public void setVoiding(boolean voiding) {
+		if(voiding) {
+			this.voiding = Question.TRUE;
+		}
+		else this.voiding = Question.FALSE;
+	}
+	public Question isVoiding() {
+		return voiding;
+	}
+	
 	
 }

@@ -13,22 +13,22 @@ rule "Init"
 		String sex =  questionCommunicator.createSelectOptionQuestion("What's your gender?", new String[] {"male", "female", "devil knows"});
 		diagnosis.setSex(sex);
 		diagnosis.setOverEighteeen(age);
-        String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion("Co Cię boli, czy aż tak to cię boli, czy Rychu peja ma dziś szansę uczciwie zarobić?", new String[] {"klatka", "brzuch"});
-		for(String ans : compoundAnswer) {	
+        String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion("What hurts you? Where does it hurt you?", new String[] {"chest", "stomach"});
+		for(String ans : compoundAnswer.clone()) {
 			insert(ans);
 		}
 		insert(diagnosis);
 end
+
 rule "Chest"
-	when s: String(s == "klatka")
+	when s: String(s == "chest")
 	then
 		diagnosis.setChestPain(true);
-		System.out.println(diagnosis.isChestPain());
 		update(diagnosis);
 end
 
 rule "Stomach"
-	when s: String(s == "brzuch")
+	when s: String(s == "stomach")
 	then
 		diagnosis.setStomachPain(true);
 		update(diagnosis);
@@ -37,25 +37,68 @@ end
 rule "Stuffiness"
     when d : DiagnosisMaster(d.isChestPain() == Question.TRUE)
     then
-    	//System.out.println(d.isStuffiness());
-        d.setStuffiness(questionCommunicator.createQuestion("Czy masz uczucie duszności?"));
-        System.out.println(d.isStuffiness());
+        d.setStuffiness(questionCommunicator.createQuestion("Are you sufferring from stuffiness?"));
         update(d);
     end
-
-rule "NoStuffiness"
-    when d : DiagnosisMaster(d.isStuffiness() == Question.FALSE)
-    then
-        diagnosis.setChestPain(false);
-        update(d);
-    end
-
 
 rule "StuffinessAfterSports"
     when d : DiagnosisMaster(d.isStuffiness() == Question.TRUE)
     then
-        d.setSportStuffiness(questionCommunicator.createQuestion("Czy uczucie duszności nasila się przy wysiłku fizycznym?"));
+        d.setSportStuffiness(questionCommunicator.createQuestion("Are your breathing problems intensifying after doing sports?"));
         update(d);
     end 
+    
+rule "BloodPressure"
+    when d : DiagnosisMaster(d.isSportStuffiness() == Question.TRUE)
+    then
+        d.setBloodPressure(questionCommunicator.createQuestion("Is your blood pressure ok?"));
+        update(d);
+    end 
+    
+rule "Pulmonologist"
+    when d : DiagnosisMaster(d.isBloodPressure() == Question.TRUE)
+    then
+        System.out.println("Pulmonologist");
+    end 
+    
+rule "Cardiologist"
+    when d : DiagnosisMaster(d.isBloodPressure() == Question.FALSE)
+    then
+        System.out.println("Cardiologist");
+    end       
+//--9 
+rule "Abdomen" //podbrzusze
+    when d : DiagnosisMaster(d.isStomachPain() == Question.TRUE)
+    then
+        d.setAbdomen(questionCommunicator.createQuestion("Does your abdomen hurt?"));
+        update(d);
+    end
 
+rule "Meal"
+	when d : DiagnosisMaster(d.isAbdomen() == Question.FALSE)
+	then
+		d.setMeal(questionCommunicator.createQuestion("Is your pain connected with meals you eat?"));
+		System.out.println(d.isChestPain());
+		update(d);
+	end
 
+rule "Nausea" //nudnosci
+    when d : DiagnosisMaster(d.isMeal() == Question.TRUE)
+    then
+        d.setNausea(questionCommunicator.createQuestion("Do you feel nauseous?"));
+        update(d);
+    end
+
+rule "Gastrologist"
+    when d : DiagnosisMaster(d.isNausea() == Question.TRUE)
+    then
+        System.out.println("Gastrologist");
+    end 
+
+rule "Voiding"
+	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE)
+	then
+		d.setVoiding(questionCommunicator.createQuestion("Is your pain connected with the voiding?"));
+		System.out.println(d.isChestPain());
+		update(d);
+	end
