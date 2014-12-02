@@ -28,6 +28,7 @@ rule "End"
 	end
 
 rule "Chest"
+	salience(1000)
 	when s: String(s == "chest")
 	then
 		diagnosis.setChestPain(true);
@@ -35,6 +36,7 @@ rule "Chest"
 end
 
 rule "Stomach"
+	salience(1000)
 	when s: String(s == "stomach")
 	then
 		diagnosis.setStomachPain(true);
@@ -42,9 +44,10 @@ rule "Stomach"
 end
 
 rule "Stuffiness"
-    when d : DiagnosisMaster(d.isChestPain() == Question.TRUE)
+    when d : DiagnosisMaster(d.isChestPain() == Question.TRUE, d.isStuffiness() == Question.NOT_ASKED )
     then
         d.setStuffiness(questionCommunicator.createQuestion("Are you sufferring from stuffiness?"));
+        System.out.println(d.isStomachPain());
         update(d);
     end
 
@@ -103,7 +106,7 @@ rule "Gastrologist"
     end 
 
 rule "Voiding"
-	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE)
+	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isVoiding() == Question.NOT_ASKED )
 	then
 		d.setVoiding(questionCommunicator.createQuestion("Is your pain connected with the voiding?"));
 		System.out.println(d.isChestPain());

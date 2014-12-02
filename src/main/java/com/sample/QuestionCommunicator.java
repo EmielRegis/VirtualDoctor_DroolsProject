@@ -11,4 +11,5 @@ public interface QuestionCommunicator {
     public void createNoCallbackNotification(String message);
     public String createSelectOptionQuestion(String message, String[] options);
     public String[] createSelectOptionsQuestion (String message, String[] options);
+
 }
