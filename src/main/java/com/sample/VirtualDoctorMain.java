@@ -44,15 +44,12 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class VirtualDoctorMain {
 
-    private static StatefulKnowledgeSession kSession;
+    
 
 	public static void main(String[] args) {
-		
 		final MainWindow frame = new MainWindow();
 		
-		final QuestionCommunicator qCom = new MedicalQuestionCommunicator();
-		
-		final DiagnosisMaster diagnosis = new DiagnosisMaster();
+		final QuestionCommunicator qCom = new MedicalQuestionCommunicator();		
         
         qCom.setQuestionCommunicatorListener(new QuestionCommunicatorMessageListener() {
         	boolean isClicked;
@@ -108,6 +105,15 @@ public class VirtualDoctorMain {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
 						answer = true;		
+						isClicked = true;
+					}              		
+            	});
+            	
+            	frame.startButton.addActionListener(new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+						answer = false;		
 						isClicked = true;
 					}              		
             	});
@@ -192,6 +198,15 @@ public class VirtualDoctorMain {
 					}              		
             	});
             	
+            	frame.startButton.addActionListener(new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+						textAnswer = null;		
+						isClicked = true;
+					}              		
+            	});
+            	
             	questionLabel.setText(message);
             	
             	 while(!isClicked)
@@ -268,6 +283,15 @@ public class VirtualDoctorMain {
 					}              		
             	});
             	
+            	frame.startButton.addActionListener(new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+						textAnswer = null;		
+						isClicked = true;
+					}              		
+            	});
+            	
             	
             	questionLabel.setText(message);
             	
@@ -280,43 +304,20 @@ public class VirtualDoctorMain {
 			}
         });
 		
-		
-		frame.startButton.addActionListener(new ActionListener() {
+        final RulesRuler ruler = new RulesRuler(qCom);
+        
+        frame.startButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{				
-				Thread t1 = new Thread(new Runnable() {
-				     public void run() 
-				     {
-				    	 try 
-					     {
-				    		 try {
-				    		 AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File("house_voice.wav"));
-				    		 Clip clip = AudioSystem.getClip();
-				    		 clip.open(audioIn);
-				    		 clip.start();
-				    		 } catch (Exception e){};
-				    		 
-				    		 
-				    		 KnowledgeBase kBase = readKnowledgeBase();
-					         kSession = kBase.newStatefulKnowledgeSession();
-					         KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(kSession, "test");           
-
-					         kSession.setGlobal("questionCommunicator", qCom);
-					         kSession.setGlobal("diagnosis", diagnosis);
-					            
-					         kSession.fireAllRules();
-
-					         logger.close();
-					     }
-					     catch (Throwable t) { t.printStackTrace(); }
-				     }
-				});  
-				t1.start();							
+				ruler.startRules();					
 			}
 		});
-			
+                
+        Thread t = new Thread(ruler);
+        t.start();
+		
 		ImageIcon img = new ImageIcon("medicine_icon.png");
         frame.setIconImage(img.getImage());
         
@@ -333,22 +334,7 @@ public class VirtualDoctorMain {
         frame.setVisible(true);
     }
 
-    private static KnowledgeBase readKnowledgeBase() throws Exception {
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add(ResourceFactory.newClassPathResource("VirtualDoctorRules.drl"), ResourceType.DRL);
-        KnowledgeBuilderErrors errors = kBuilder.getErrors();
-
-        if (errors.size() > 0) {
-            for (KnowledgeBuilderError error: errors) {
-                System.err.println(error);
-            }
-            throw new IllegalArgumentException("Could not parse knowledge.");
-        }
-
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addKnowledgePackages(kBuilder.getKnowledgePackages());
-
-        return kBase;
-    }
-
+    
+    
+     
 }
