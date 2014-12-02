@@ -268,6 +268,7 @@ public class VirtualDoctorMain {
 					}              		
             	});
             	
+            	
             	questionLabel.setText(message);
             	
            	 	while(!isClicked)
@@ -296,6 +297,7 @@ public class VirtualDoctorMain {
 				    		 clip.open(audioIn);
 				    		 clip.start();
 				    		 } catch (Exception e){};
+				    		 
 				    		 
 				    		 KnowledgeBase kBase = readKnowledgeBase();
 					         kSession = kBase.newStatefulKnowledgeSession();
