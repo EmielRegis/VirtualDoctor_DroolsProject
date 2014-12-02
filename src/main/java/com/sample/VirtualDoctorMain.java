@@ -293,6 +293,7 @@ public class VirtualDoctorMain {
 				    		 clip.open(audioIn);
 				    		 clip.start();
 				    		 
+				    		 
 				    		 KnowledgeBase kBase = readKnowledgeBase();
 					         kSession = kBase.newStatefulKnowledgeSession();
 					         KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(kSession, "test");           
