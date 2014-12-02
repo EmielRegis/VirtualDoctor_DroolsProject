@@ -23,6 +23,7 @@ rule "Chest"
 	when s: String(s == "klatka")
 	then
 		diagnosis.setChestPain(true);
+		System.out.println(diagnosis.isChestPain());
 		update(diagnosis);
 end
 
@@ -30,27 +31,31 @@ rule "Stomach"
 	when s: String(s == "brzuch")
 	then
 		diagnosis.setStomachPain(true);
+		update(diagnosis);
 end
 
-
 rule "Stuffiness"
-    when d : DiagnosisMaster(chestPain)
+    when d : DiagnosisMaster(d.isChestPain() == Question.TRUE)
     then
     	//System.out.println(d.isStuffiness());
         d.setStuffiness(questionCommunicator.createQuestion("Czy masz uczucie duszności?"));
-      //  System.out.println(d.isStuffiness());
+        System.out.println(d.isStuffiness());
         update(d);
     end
- 
-rule "Stomacha"
-	when d : DiagnosisMaster(stomachPain)
-	then
-		System.out.println("boli mnie brzuch");
-end
 
-rule "Stuffinessa"
-	when d : DiagnosisMaster(stuffiness)
-	then
-		System.out.println("jedz suchary");
-end
+rule "NoStuffiness"
+    when d : DiagnosisMaster(d.isStuffiness() == Question.FALSE)
+    then
+        diagnosis.setChestPain(false);
+        update(d);
+    end
+
+
+rule "StuffinessAfterSports"
+    when d : DiagnosisMaster(d.isStuffiness() == Question.TRUE)
+    then
+        d.setSportStuffiness(questionCommunicator.createQuestion("Czy uczucie duszności nasila się przy wysiłku fizycznym?"));
+        update(d);
+    end 
+
 

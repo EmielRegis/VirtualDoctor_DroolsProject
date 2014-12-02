@@ -2,36 +2,58 @@ package com.sample;
 
 public class DiagnosisMaster extends Thread {
 	private String sex;
-	private boolean overEighteeen; 
-	private boolean chestPain = false;
-	private boolean stomachPain = false;
-	private boolean stuffiness;
-	private boolean steppedUpBreath = false;
+	private Question overEighteeen = Question.NOT_ASKED; 
+	private Question chestPain = Question.NOT_ASKED;
+	private Question stomachPain = Question.NOT_ASKED;
+	private Question stuffiness = Question.NOT_ASKED;
+	private Question sportStuffiness = Question.NOT_ASKED;
+	private Question steppedUpBreath = Question.NOT_ASKED;
 	
 
-	public boolean isStomachPain() {
+	public Question isStomachPain() {
 		return stomachPain;
 	}
 	public void setStomachPain(boolean stomachPain) {
-		this.stomachPain = stomachPain;
+		if(stomachPain) {
+			this.stomachPain = Question.TRUE;
+		}
+		else this.stomachPain = Question.FALSE;
 	}
-	public boolean isSteppedUpBreath() {
+	public Question isSteppedUpBreath() {
 		return steppedUpBreath;
 	}
 	public void setSteppedUpBreath(boolean steppedUpBreath) {
-		this.steppedUpBreath = steppedUpBreath;
+		if(steppedUpBreath) {
+			this.steppedUpBreath = Question.TRUE;
+		}
+		else this.steppedUpBreath = Question.FALSE;
 	}
-	public boolean isChestPain() {
+	public Question isChestPain() {
 		return chestPain;
 	}
 	public void setChestPain(boolean chestPain) {
-		this.chestPain = chestPain;
+		if(chestPain) {
+			this.chestPain = Question.TRUE;
+		}
+		else this.chestPain = Question.FALSE;
 	}
-	public boolean isStuffiness() {
+	public Question isStuffiness() {
 		return stuffiness;
 	}
+	public void setSportStuffiness(boolean sportStuffiness) {
+		if(sportStuffiness) {
+			this.sportStuffiness = Question.TRUE;
+		}
+		else this.sportStuffiness = Question.FALSE;
+	}
+	public Question isSportStuffiness() {
+		return sportStuffiness;
+	}
 	public void setStuffiness(boolean stuffiness) {
-		this.stuffiness = stuffiness;
+		if(stuffiness) {
+			this.stuffiness = Question.TRUE;
+		}
+		else this.stuffiness = Question.FALSE;
 	}
 	public String getSex() {
 		return sex;
@@ -39,11 +61,14 @@ public class DiagnosisMaster extends Thread {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
-	public boolean isOverEighteeen() {
+	public Question isOverEighteeen() {
 		return overEighteeen;
 	}
 	public void setOverEighteeen(boolean overEighteeen) {
-		this.overEighteeen = overEighteeen;
+		if(overEighteeen) {
+			this.overEighteeen = Question.TRUE;
+		}
+		else this.overEighteeen = Question.FALSE;
 	}
 	
 }
