@@ -29,6 +29,13 @@ public class DiagnosisMaster extends Thread {
 	private Question radiatingPain = Question.NOT_ASKED;
 	private Question menstrualCycleDisorder = Question.NOT_ASKED;
 	private Question genialTractBleeding = Question.NOT_ASKED;
+	private Question headAcheQuestions = Question.NOT_ASKED;
+	private Question sinusesAche = Question.NOT_ASKED;
+	private Question earsAche = Question.NOT_ASKED;
+	private Question blockedUpEars = Question.NOT_ASKED;
+	private Question migraine = Question.NOT_ASKED;
+	private Question neuralgia = Question.NOT_ASKED;
+	private Question diabetes = Question.NOT_ASKED;
 	
 	public Question isStomachPain() {
 		return stomachPain;
@@ -302,6 +309,69 @@ public class DiagnosisMaster extends Thread {
 	}
 	public Question isMenstrualCycleDisorder() {
 		return menstrualCycleDisorder;
+	}
+	public void setHeadAcheQuestions(boolean headAcheQuestions) {
+		if (headAcheQuestions) {
+			this.headAcheQuestions = Question.TRUE;
+		} else
+			this.headAcheQuestions = Question.FALSE;
+	}
+	public Question isHeadAcheQuestions() {
+		return headAcheQuestions;
+	}
+	public void setSinusesAche(boolean sinusesAche) {
+		if (sinusesAche) {
+			this.sinusesAche = Question.TRUE;
+		} else
+			this.sinusesAche = Question.FALSE;
+	}
+	public Question isSinusesAche() {
+		return sinusesAche;
+	}
+	public void setEarsAche(boolean earsAche) {
+		if (earsAche) {
+			this.earsAche = Question.TRUE;
+		} else
+			this.earsAche = Question.FALSE;
+	}
+	public Question isEarsAche() {
+		return earsAche;
+	}
+	public void setBlockedUpEars(boolean blockedUpEars) {
+		if (blockedUpEars) {
+			this.blockedUpEars = Question.TRUE;
+		} else
+			this.blockedUpEars = Question.FALSE;
+	}
+	public Question isBlockedUpEars() {
+		return blockedUpEars;
+	}
+	public void setMigraine(boolean migraine) {
+		if (migraine) {
+			this.migraine = Question.TRUE;
+		} else
+			this.migraine = Question.FALSE;
+	}
+	public Question isMigraine() {
+		return migraine;
+	}
+	public void setNeuralgia(boolean neuralgia) {
+		if (neuralgia) {
+			this.neuralgia = Question.TRUE;
+		} else
+			this.neuralgia = Question.FALSE;
+	}
+	public Question isNeuralgia() {
+		return neuralgia;
+	}
+	public void setDiabetes(boolean diabetes) {
+		if (diabetes) {
+			this.diabetes = Question.TRUE;
+		} else
+			this.diabetes = Question.FALSE;
+	}
+	public Question isDiabetes() {
+		return diabetes;
 	}
 	
 }

@@ -13,7 +13,7 @@ rule "Init"
 		String sex =  questionCommunicator.createSelectOptionQuestion("Twoja płeć to:", new String[] {"mężczyzna", "kobieta"});
 		diagnosis.setSex(sex);
 		diagnosis.setOverEighteeen(age);
-        String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion("Odczuwasz ból w:", new String[] {"klatce piersiowej", "brzuchu"});
+        String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion("Czy boli Cię:", new String[] {"klatka piersiowa", "brzuch", "głowa"});
 		for(String ans : compoundAnswer.clone()) {
 			insert(ans);
 		}
@@ -29,7 +29,7 @@ rule "End"
 
 rule "Chest"
 	salience(1000)
-	when s: String(s == "klatce piersiowej")
+	when s: String(s == "klatka piersiowa")
 	then
 		diagnosis.setChestPain(true);
 		update(diagnosis);
@@ -37,9 +37,17 @@ end
 
 rule "Stomach"
 	salience(1000)
-	when s: String(s == "brzuchu")
+	when s: String(s == "brzuch")
 	then
 		diagnosis.setStomachPain(true);
+		update(diagnosis);
+end
+
+rule "Head"
+	salience(1000)
+	when s: String(s == "głowa")
+	then
+		diagnosis.setHeadAche(true);
 		update(diagnosis);
 end
 
@@ -63,6 +71,18 @@ rule "StomachQuestion"
     	String ans = questionCommunicator.createSelectOptionQuestion(
     	"Sprecyzuj miejsce bólu.", new String[] {"podbrzusze", "okolice pępka"});
 		insert(ans);		
+    end
+    
+rule "HeadAcheQuestion"
+    when d : DiagnosisMaster(d.isHeadAche() == Question.TRUE, d.isHeadAcheQuestions == Question.NOT_ASKED)
+    then
+    	d.setHeadAcheQuestions(true);
+    	String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion(
+    	"Które z wymienionych objawów dotyczą Ciebie?", new String[] {"ból zatok", "problemy ze słuchem",
+    	 "złe ciśnienie tętnicze", "problemy ze wzrokiem", "migrena" });
+		for(String ans : compoundAnswer.clone()) {
+			insert(ans);
+		}
     end
 
 rule "Stuffiness"
@@ -99,6 +119,27 @@ rule "Navel"
         diagnosis.setNavel(true);
         update(diagnosis);
     end
+    
+rule "SinusesAche"
+    when s : String(s == "ból zatok")
+    then
+        diagnosis.setSinusesAche(true);
+        update(diagnosis);
+    end
+    
+rule "EarsAche"
+    when s : String(s == "problemy ze słuchem")
+    then
+        diagnosis.setEarsAche(true);
+        update(diagnosis);
+    end    
+
+rule "Migraine"
+    when s : String(s == "migrena")
+    then
+        diagnosis.setMigraine(true);
+        update(diagnosis);
+    end    
         
 rule "StuffinessAfterSports"
     when d : DiagnosisMaster(d.isStuffiness() == Question.TRUE, d.isSportStuffiness() == Question.NOT_ASKED)
@@ -309,13 +350,6 @@ rule "MealGastrologist"
        questionCommunicator.createNoCallbackNotification("Gastrologist");
        drools.halt();
     end    
-    
-rule "NavelHeadache"
-	when d : DiagnosisMaster(d.isNavel() == Question.TRUE, d.isHeadAche() == Question.NOT_ASKED)
-    then
-         d.setHeadAche(questionCommunicator.createQuestion("Czy odczuwasz ból głowy?"));
-         update(d);
-    end
 
 rule "NavelSoreThroat"
 	when d : DiagnosisMaster(d.isNavel() == Question.TRUE, d.isSoreThroat() == Question.NOT_ASKED)
@@ -323,13 +357,6 @@ rule "NavelSoreThroat"
          d.setSoreThroat(questionCommunicator.createQuestion("Czy odczuwasz ból gardła?"));
          update(d);
     end  
-    
-rule "HeadAchePhysician"
-    when d : DiagnosisMaster(d.isHeadAche() == Question.TRUE, d.isOverEighteeen() == Question.FALSE)
-    then
-       questionCommunicator.createNoCallbackNotification("Pediatry");
-       drools.halt();
-    end 
     
 rule "SoreThroatPhysician"
     when d : DiagnosisMaster(d.isSoreThroat() == Question.TRUE, d.isOverEighteeen() == Question.FALSE)
@@ -393,6 +420,103 @@ rule "GenialTractBleedingGynecologist"
        questionCommunicator.createNoCallbackNotification("Ginekologa");
        drools.halt();
     end 
+    
+rule "SinusesAcheLongLastingCold"
+    when d : DiagnosisMaster(d.isSinusesAche() == Question.TRUE, d.isLongLastingCold() == Question.NOT_ASKED)
+    then
+        d.setLongLastingCold(questionCommunicator.createQuestion("Czy masz długotrwały katar i często kichasz?"));
+        update(d);
+    end
+    
+rule "SinusesAcheSoreThroat"
+    when d : DiagnosisMaster(d.isSinusesAche() == Question.TRUE, d.isSoreThroat() == Question.NOT_ASKED)
+    then
+        d.setSoreThroat(questionCommunicator.createQuestion("Czy odczuwasz ból gardła?"));
+        update(d);
+    end
+    
+rule "EarsAcheBlockedUpEars"
+    when d : DiagnosisMaster(d.isEarsAche() == Question.TRUE, d.isBlockedUpEars() == Question.NOT_ASKED)
+    then
+        d.setBlockedUpEars(questionCommunicator.createQuestion("Czy czujesz, że Twoje uszy się zapychają?"));
+        update(d);
+    end
+    
+rule "EarsAcheSoreThroat"
+    when d : DiagnosisMaster(d.isEarsAche() == Question.TRUE, d.isSoreThroat() == Question.NOT_ASKED)
+    then
+        d.setSoreThroat(questionCommunicator.createQuestion("Czy czujesz, że Twoje uszy się zapychają?"));
+        update(d);
+    end
+    
+rule "SinusesAcheLongLastingColdEarAcheLaryngologist"
+    when d : DiagnosisMaster( d.isLongLastingCold == Question.TRUE, d.isEarsAche() == Question.TRUE)
+    then
+        questionCommunicator.createNoCallbackNotification("Laryngologa");
+        drools.halt();
+    end
+rule "SinueseAcheLongLastingColdSoreThroatLaryngologist"
+    when d : DiagnosisMaster( d.isLongLastingCold == Question.TRUE, d.isSoreThroat() == Question.TRUE)
+    then
+        questionCommunicator.createNoCallbackNotification("Laryngologa");
+        drools.halt();
+    end
+rule "SinueseAcheEarAcheSoreThroatLaryngologist"
+    when d : DiagnosisMaster( d.isEarsAche == Question.TRUE, d.isSoreThroat() == Question.TRUE)
+    then
+        questionCommunicator.createNoCallbackNotification("Laryngologa");
+        drools.halt();
+    end
+    
+rule "BlockedUpEarsLaryngologist"
+    when d : DiagnosisMaster( d.isBlockedUpEars == Question.TRUE)
+    then
+        questionCommunicator.createNoCallbackNotification("Laryngologa");
+        drools.halt();
+    end
+
+rule "BloodPressureNeuralgia"
+    when d : DiagnosisMaster( d.isBloodPressure == Question.TRUE, d.isNeuralgia() == Question.NOT_ASKED)
+    then
+       	d.setNeuralgia(questionCommunicator.createQuestion("Czy odczuwasz nerwobóle?"));
+    	update(d);
+    end 
+    
+rule "MigraineNeuralgia"
+    when d : DiagnosisMaster( d.isMigraine == Question.TRUE, d.isNeuralgia() == Question.NOT_ASKED)
+    then
+      	d.setNeuralgia(questionCommunicator.createQuestion("Czy odczuwasz nerwobóle?"));
+    	update(d);
+    end 
+    
+rule "BloodPressureDiabetes"
+    when d : DiagnosisMaster( d.isBloodPressure == Question.TRUE, d.isDiabetes() == Question.NOT_ASKED)
+    then
+       	d.setDiabetes(questionCommunicator.createQuestion("Czy masz cukrzyce?"));
+    	update(d);
+    end 
+    
+rule "MigraineDiabetes"
+    when d : DiagnosisMaster( d.isMigraine == Question.TRUE, d.isDiabetes() == Question.NOT_ASKED)
+    then
+      	 d.setDiabetes(questionCommunicator.createQuestion("Czy masz cukrzyce?"));
+   		update(d);
+    end 
+    
+rule "DiabetesNeurologist"
+    when d : DiagnosisMaster( d.isDiabetes == Question.TRUE)
+    then
+        questionCommunicator.createNoCallbackNotification("Neurologa");
+        drools.halt();
+    end
+    
+rule "NeuralgiaNeurologist"
+    when d : DiagnosisMaster( d.isNeuralgia == Question.TRUE)
+    then
+        questionCommunicator.createNoCallbackNotification("Neurologa");
+        drools.halt();
+    end
+
  
  rule "Answer"
 	salience(-10)
