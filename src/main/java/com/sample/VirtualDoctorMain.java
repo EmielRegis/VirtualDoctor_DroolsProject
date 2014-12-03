@@ -60,7 +60,7 @@ public class VirtualDoctorMain {
         	@Override
         	public void processNoCallbackMessage (String message)
         	{
-        		message = "<html> " + message + "</html>";
+        		message = "<html> Powinieneś udać się do " + message + "</html>";
         		
         		if(frame.questionPanel.getComponentCount() > 0)
             	{

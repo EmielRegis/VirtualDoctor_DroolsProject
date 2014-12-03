@@ -8,12 +8,12 @@ import org.drools.marshalling.impl.ProtobufMessages
 rule "Init"
     when
     then
-        System.out.println("Initializiing...");
-        boolean age = questionCommunicator.createQuestion("Are you over 18 sweetheart?");
-		String sex =  questionCommunicator.createSelectOptionQuestion("What's your gender?", new String[] {"male", "female"});
+        System.out.println("Inicjalizuję...");
+        boolean age = questionCommunicator.createQuestion("Czy jesteś osobą dorosłą?");
+		String sex =  questionCommunicator.createSelectOptionQuestion("Twoja płeć to:", new String[] {"mężczyzna", "kobieta"});
 		diagnosis.setSex(sex);
 		diagnosis.setOverEighteeen(age);
-        String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion("What hurts you? Where does it hurt you?", new String[] {"chest", "stomach"});
+        String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion("Odczuwasz ból w:", new String[] {"klatce piersiowej", "brzuchu"});
 		for(String ans : compoundAnswer.clone()) {
 			insert(ans);
 		}
@@ -29,7 +29,7 @@ rule "End"
 
 rule "Chest"
 	salience(1000)
-	when s: String(s == "chest")
+	when s: String(s == "klatce piersiowej")
 	then
 		diagnosis.setChestPain(true);
 		update(diagnosis);
@@ -37,7 +37,7 @@ end
 
 rule "Stomach"
 	salience(1000)
-	when s: String(s == "stomach")
+	when s: String(s == "brzuchu")
 	then
 		diagnosis.setStomachPain(true);
 		update(diagnosis);
@@ -49,7 +49,7 @@ rule "ChestQuestion"
     then
     	d.setChestQuestions(true);
     	String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion(
-    	"What hurts you? Where does it hurt you?", new String[] {"uczucie duszności", "przyspieszony oddech",
+    	"Które z wymienionych objawów dotyczą Ciebie?", new String[] {"uczucie duszności", "przyspieszony oddech",
     	 "złe ciśnienie tętnicze"});
 		for(String ans : compoundAnswer.clone()) {
 			insert(ans);
@@ -61,7 +61,7 @@ rule "StomachQuestion"
     then
     	d.setStomachQuestions(true);
     	String ans = questionCommunicator.createSelectOptionQuestion(
-    	"Where does it hurt you?", new String[] {"podbrzusze", "okolice pępka"});
+    	"Sprecyzuj miejsce bólu.", new String[] {"podbrzusze", "okolice pępka"});
 		insert(ans);		
     end
 
@@ -138,14 +138,14 @@ rule "LongLastingColdPneumoniaOrBronchitis"
 rule "LongLastingColdStingingEyes"
     when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isStingingEyes() == Question.NOT_ASKED)
     then
-        d.setStingingEyes(questionCommunicator.createQuestion("Czy często odczuwasz szczypanie oczu?"));
+        d.setStingingEyes(questionCommunicator.createQuestion("Czy często odczuwasz pieczeni oczu?"));
         update(d);
     end
     
 rule "LongLastingColdRash"
     when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isRash() == Question.NOT_ASKED)
     then
-        d.setRash(questionCommunicator.createQuestion("Czy masz wysypkę?"));
+        d.setRash(questionCommunicator.createQuestion("Czy miewasz wysypki?"));
         update(d);
     end
 
@@ -153,12 +153,14 @@ rule "RashAlergologist"
     when d : DiagnosisMaster(d.isRash() == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Alergologist");
+       drools.halt();
     end
     
 rule "StingingEyesAlergologist"
     when d : DiagnosisMaster(d.isStingingEyes() == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Alergologist");
+       drools.halt();
     end
     
 rule "StufinessCough"
@@ -186,18 +188,21 @@ rule "PneumoniaOrBronchitisPulmonologist"
     when d : DiagnosisMaster(d.isPneumoniaOrBronchitis() == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Pulmonologist");
+       drools.halt();
     end
             
 rule "CoughPulmonologist"
     when d : DiagnosisMaster(d.isCough() == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Pulmonologist");
+       drools.halt();
     end
 
 rule "AsthmaPulmonologist"
     when d : DiagnosisMaster(d.isAsthma() == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Pulmonologist");
+       drools.halt();
     end
 
 rule "StuffinessStrongEmotions"
@@ -295,12 +300,14 @@ rule "NauseaGastrologist"
     when d : DiagnosisMaster(d.isNausea() == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Gastrologist");
+       drools.halt();
     end    
 
 rule "MealGastrologist"
     when d : DiagnosisMaster(d.isMeal() == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Gastrologist");
+       drools.halt();
     end    
     
 rule "NavelHeadache"
@@ -318,16 +325,18 @@ rule "NavelSoreThroat"
     end  
     
 rule "HeadAchePhysician"
-    when d : DiagnosisMaster(d.isHeadAche() == Question.TRUE)
+    when d : DiagnosisMaster(d.isHeadAche() == Question.TRUE, d.isOverEighteeen() == Question.FALSE)
     then
-       questionCommunicator.createNoCallbackNotification("Physician");
+       questionCommunicator.createNoCallbackNotification("Pediatry");
+       drools.halt();
     end 
     
 rule "SoreThroatPhysician"
-    when d : DiagnosisMaster(d.isSoreThroat() == Question.TRUE)
+    when d : DiagnosisMaster(d.isSoreThroat() == Question.TRUE, d.isOverEighteeen() == Question.FALSE)
     then
-       questionCommunicator.createNoCallbackNotification("Physician");
-    end    
+       questionCommunicator.createNoCallbackNotification("Pediatry");
+       drools.halt();
+    end  
     
 rule "AbdomenVoiding"
 	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isVoiding() == Question.NOT_ASKED)
@@ -346,24 +355,26 @@ rule "AbdomenRadiatingPain"
 rule "RadiatingPainUrologist"
     when d : DiagnosisMaster(d.isRadiatingPain() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Urologist");
+       questionCommunicator.createNoCallbackNotification("Urologa");
+       drools.halt();
     end  
     
 rule "VoidingUrologist"
     when d : DiagnosisMaster(d.isVoiding() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Urologist");
+       questionCommunicator.createNoCallbackNotification("Urologa");
+       drools.halt();
     end 
 
 rule "AbdomenGenialTractBleeding"
-	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isGenialTractBleeding() == Question.NOT_ASKED, d.getSex() == "female")
+	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isGenialTractBleeding() == Question.NOT_ASKED, d.getSex() == "kobieta")
     then
          d.setGenialTractBleeding(questionCommunicator.createQuestion("Czy pojawiają się patologiczne krwawienia z dróg rodnych?"));
          update(d);
     end
     
 rule "AbdomenMenstrualCycleDisorder"
-	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isMenstrualCycleDisorder() == Question.NOT_ASKED, d.getSex() == "female")
+	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isMenstrualCycleDisorder() == Question.NOT_ASKED, d.getSex() == "kobieta")
     then
          d.setMenstrualCycleDisorder(questionCommunicator.createQuestion("Czy pojawiają się zaburzenia cyklu miesiączkowego?"));
          update(d);
@@ -372,19 +383,21 @@ rule "AbdomenMenstrualCycleDisorder"
 rule "MenstrualCycleDisorderGynecologist"
     when d : DiagnosisMaster(d.isMenstrualCycleDisorder() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Gynecologist");
+       questionCommunicator.createNoCallbackNotification("Ginekologa");
+       drools.halt();
     end 
 
 rule "GenialTractBleedingGynecologist"
     when d : DiagnosisMaster(d.isGenialTractBleeding() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Gynecologist");
+       questionCommunicator.createNoCallbackNotification("Ginekologa");
+       drools.halt();
     end 
  
  rule "Answer"
 	salience(-10)
 	when 
 	then
-		questionCommunicator.createNoCallbackNotification("Nope");
+		questionCommunicator.createNoCallbackNotification("Podałeś za mało danych lub nie wiemy jak Ci pomóc :(");
 	end
 
