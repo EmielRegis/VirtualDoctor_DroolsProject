@@ -132,6 +132,13 @@ rule "EarsAche"
     then
         diagnosis.setEarsAche(true);
         update(diagnosis);
+    end 
+
+rule "Eyesight"
+    when s : String(s == "problemy ze wzrokiem")
+    then
+        diagnosis.setEyesight(true);
+        update(diagnosis);
     end    
 
 rule "Migraine"
@@ -179,7 +186,7 @@ rule "LongLastingColdPneumoniaOrBronchitis"
 rule "LongLastingColdStingingEyes"
     when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isStingingEyes() == Question.NOT_ASKED)
     then
-        d.setStingingEyes(questionCommunicator.createQuestion("Czy często odczuwasz pieczeni oczu?"));
+        d.setStingingEyes(questionCommunicator.createQuestion("Czy często odczuwasz pieczenie oczu?"));
         update(d);
     end
     
@@ -193,14 +200,14 @@ rule "LongLastingColdRash"
 rule "RashAlergologist"
     when d : DiagnosisMaster(d.isRash() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Alergologist");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u alergologa");
        drools.halt();
     end
     
 rule "StingingEyesAlergologist"
     when d : DiagnosisMaster(d.isStingingEyes() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Alergologist");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u alergologa");
        drools.halt();
     end
     
@@ -228,21 +235,21 @@ rule "StufinessPneumoniaOrBronchitis"
 rule "PneumoniaOrBronchitisPulmonologist"
     when d : DiagnosisMaster(d.isPneumoniaOrBronchitis() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Pulmonologist");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u pulmonologa");
        drools.halt();
     end
             
 rule "CoughPulmonologist"
     when d : DiagnosisMaster(d.isCough() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Pulmonologist");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u pulmonologa");
        drools.halt();
     end
 
 rule "AsthmaPulmonologist"
     when d : DiagnosisMaster(d.isAsthma() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Pulmonologist");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u pulmonologa");
        drools.halt();
     end
 
@@ -263,14 +270,14 @@ rule "StuffinessHeartPalpiatation"
 rule "StronEmotionsCardiologist"
     when d : DiagnosisMaster(d.isStrongEmotions() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Cardiologist");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u kardiologa");
        drools.halt();
     end
 
 rule "HeartPalpitationcardiologist"
     when d : DiagnosisMaster(d.isHeartPalpitation() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Cardiologist");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u kardiologa");
        drools.halt();
     end
       
@@ -340,14 +347,14 @@ rule "NavelMeal"
 rule "NauseaGastrologist"
     when d : DiagnosisMaster(d.isNausea() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Gastrologist");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u gastrologa");
        drools.halt();
     end    
 
 rule "MealGastrologist"
     when d : DiagnosisMaster(d.isMeal() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Gastrologist");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u gastrologa");
        drools.halt();
     end    
 
@@ -361,7 +368,7 @@ rule "NavelSoreThroat"
 rule "SoreThroatPhysician"
     when d : DiagnosisMaster(d.isSoreThroat() == Question.TRUE, d.isOverEighteeen() == Question.FALSE)
     then
-       questionCommunicator.createNoCallbackNotification("Pediatry");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u pediatry");
        drools.halt();
     end  
     
@@ -380,16 +387,16 @@ rule "AbdomenRadiatingPain"
     end
     
 rule "RadiatingPainUrologist"
-    when d : DiagnosisMaster(d.isRadiatingPain() == Question.TRUE)
+    when d : DiagnosisMaster(d.isRadiatingPain() == Question.TRUE, d.isVoiding() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Urologa");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u urologa");
        drools.halt();
     end  
     
 rule "VoidingUrologist"
     when d : DiagnosisMaster(d.isVoiding() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Urologa");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u urologa");
        drools.halt();
     end 
 
@@ -410,14 +417,14 @@ rule "AbdomenMenstrualCycleDisorder"
 rule "MenstrualCycleDisorderGynecologist"
     when d : DiagnosisMaster(d.isMenstrualCycleDisorder() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Ginekologa");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u ginekologa");
        drools.halt();
     end 
 
 rule "GenialTractBleedingGynecologist"
     when d : DiagnosisMaster(d.isGenialTractBleeding() == Question.TRUE)
     then
-       questionCommunicator.createNoCallbackNotification("Ginekologa");
+       questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u ginekologa");
        drools.halt();
     end 
     
@@ -445,33 +452,33 @@ rule "EarsAcheBlockedUpEars"
 rule "EarsAcheSoreThroat"
     when d : DiagnosisMaster(d.isEarsAche() == Question.TRUE, d.isSoreThroat() == Question.NOT_ASKED)
     then
-        d.setSoreThroat(questionCommunicator.createQuestion("Czy czujesz, że Twoje uszy się zapychają?"));
+        d.setSoreThroat(questionCommunicator.createQuestion("Czy odczuwasz ból gardła?"));
         update(d);
     end
     
 rule "SinusesAcheLongLastingColdEarAcheLaryngologist"
     when d : DiagnosisMaster( d.isLongLastingCold == Question.TRUE, d.isEarsAche() == Question.TRUE)
     then
-        questionCommunicator.createNoCallbackNotification("Laryngologa");
+        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u laryngologa");
         drools.halt();
     end
 rule "SinueseAcheLongLastingColdSoreThroatLaryngologist"
     when d : DiagnosisMaster( d.isLongLastingCold == Question.TRUE, d.isSoreThroat() == Question.TRUE)
     then
-        questionCommunicator.createNoCallbackNotification("Laryngologa");
+        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u laryngologa");
         drools.halt();
     end
 rule "SinueseAcheEarAcheSoreThroatLaryngologist"
     when d : DiagnosisMaster( d.isEarsAche == Question.TRUE, d.isSoreThroat() == Question.TRUE)
     then
-        questionCommunicator.createNoCallbackNotification("Laryngologa");
+        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u laryngologa");
         drools.halt();
     end
     
 rule "BlockedUpEarsLaryngologist"
     when d : DiagnosisMaster( d.isBlockedUpEars == Question.TRUE)
     then
-        questionCommunicator.createNoCallbackNotification("Laryngologa");
+        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u laryngologa");
         drools.halt();
     end
 
@@ -492,28 +499,56 @@ rule "MigraineNeuralgia"
 rule "BloodPressureDiabetes"
     when d : DiagnosisMaster( d.isBloodPressure == Question.TRUE, d.isDiabetes() == Question.NOT_ASKED)
     then
-       	d.setDiabetes(questionCommunicator.createQuestion("Czy masz cukrzyce?"));
+       	d.setDiabetes(questionCommunicator.createQuestion("Czy masz cukrzycę?"));
     	update(d);
     end 
     
 rule "MigraineDiabetes"
     when d : DiagnosisMaster( d.isMigraine == Question.TRUE, d.isDiabetes() == Question.NOT_ASKED)
     then
-      	 d.setDiabetes(questionCommunicator.createQuestion("Czy masz cukrzyce?"));
+      	 d.setDiabetes(questionCommunicator.createQuestion("Czy masz cukrzycę?"));
    		update(d);
     end 
     
 rule "DiabetesNeurologist"
     when d : DiagnosisMaster( d.isDiabetes == Question.TRUE)
     then
-        questionCommunicator.createNoCallbackNotification("Neurologa");
+        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u neurologa");
         drools.halt();
     end
     
 rule "NeuralgiaNeurologist"
     when d : DiagnosisMaster( d.isNeuralgia == Question.TRUE)
     then
-        questionCommunicator.createNoCallbackNotification("Neurologa");
+        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u neurologa");
+        drools.halt();
+    end
+    
+rule "EyesightOneSidedHeadAche"
+    when d : DiagnosisMaster( d.isEyesight == Question.TRUE, d.isOneSidedHeadAche() == Question.NOT_ASKED)
+    then
+       	d.setOneSidedHeadAche(questionCommunicator.createQuestion("Czy miewasz jednostronne bóle głowy?"));
+    	update(d);
+    end
+    
+rule "EyesightFogSight"
+    when d : DiagnosisMaster( d.isEyesight == Question.TRUE, d.isFogSight() == Question.NOT_ASKED)
+    then
+       	d.setFogSight(questionCommunicator.createQuestion("Czy widzisz jakby przez mgłę?"));
+    	update(d);
+    end  
+
+rule "FogSightOculist"
+    when d : DiagnosisMaster( d.isFogSight == Question.TRUE)
+    then
+        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u okulisty");
+        drools.halt();
+    end
+    
+rule "OneSidedHeadAcheOculist"
+    when d : DiagnosisMaster( d.isOneSidedHeadAche == Question.TRUE)
+    then
+        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u okulisty");
         drools.halt();
     end
 

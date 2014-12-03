@@ -36,6 +36,9 @@ public class DiagnosisMaster extends Thread {
 	private Question migraine = Question.NOT_ASKED;
 	private Question neuralgia = Question.NOT_ASKED;
 	private Question diabetes = Question.NOT_ASKED;
+	private Question eyesight = Question.NOT_ASKED;
+	private Question fogSight = Question.NOT_ASKED;
+	private Question oneSidedHeadAche = Question.NOT_ASKED;
 	
 	public Question isStomachPain() {
 		return stomachPain;
@@ -372,6 +375,33 @@ public class DiagnosisMaster extends Thread {
 	}
 	public Question isDiabetes() {
 		return diabetes;
+	}
+	public void setEyesight(boolean eyesight) {
+		if (eyesight) {
+			this.eyesight = Question.TRUE;
+		} else
+			this.eyesight = Question.FALSE;
+	}
+	public Question isEyesight() {
+		return eyesight;
+	}
+	public void setFogSight(boolean fogSight) {
+		if (fogSight) {
+			this.fogSight = Question.TRUE;
+		} else
+			this.fogSight = Question.FALSE;
+	}
+	public Question isFogSight() {
+		return fogSight;
+	}
+	public void setOneSidedHeadAche(boolean oneSidedHeadAche) {
+		if (oneSidedHeadAche) {
+			this.oneSidedHeadAche = Question.TRUE;
+		} else
+			this.oneSidedHeadAche = Question.FALSE;
+	}
+	public Question isOneSidedHeadAche() {
+		return oneSidedHeadAche;
 	}
 	
 }
