@@ -60,7 +60,7 @@ public class VirtualDoctorMain {
         	@Override
         	public void processNoCallbackMessage (String message)
         	{
-        		message = "<html> Powinieneś udać się do " + message + "</html>";
+        		message = "<html>" + message + "</html>";
         		
         		if(frame.questionPanel.getComponentCount() > 0)
             	{
@@ -99,8 +99,8 @@ public class VirtualDoctorMain {
             	questionLabel.setFont(new Font("Sans", Font.BOLD, 14));
             	questionLabel.setBackground(Color.WHITE);
             	
-            	yesButton = new JButton("Yes");
-            	noButton = new JButton("No");
+            	yesButton = new JButton("Tak");
+            	noButton = new JButton("Nie");
             	yesButton.setBackground(new Color(30,220,30));
                 yesButton.setForeground(Color.WHITE);
                 yesButton.setFont(new Font("Sans", Font.PLAIN, 14));
@@ -173,7 +173,7 @@ public class VirtualDoctorMain {
 				questionLabel.setFont(new Font("Sans", Font.BOLD, 14));
 				questionLabel.setBackground(Color.WHITE);
 
-				okButton = new JButton("Answer");
+				okButton = new JButton("Odpowiedz");
 				okButton.setBackground(new Color(30, 220, 30));
 				okButton.setForeground(Color.WHITE);
 				okButton.setFont(new Font("Sans", Font.PLAIN, 14));
@@ -273,7 +273,7 @@ public class VirtualDoctorMain {
 				questionLabel.setFont(new Font("Sans", Font.BOLD, 14));
 				questionLabel.setBackground(Color.WHITE);
 
-				okButton = new JButton("Answer");
+				okButton = new JButton("Odpowiedz");
 				okButton.setBackground(new Color(30, 220, 30));
 				okButton.setForeground(Color.WHITE);
 				okButton.setFont(new Font("Sans", Font.PLAIN, 14));

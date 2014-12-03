@@ -64,7 +64,7 @@ public class MainWindow extends JFrame {
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("Virtual Medicine Doctor");
+		JLabel lblNewLabel = new JLabel("Wirtualny Lekarz");
 		lblNewLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
 		lblNewLabel.setBounds(358, 23, 267, 28);
 		panel_1.add(lblNewLabel);
@@ -81,11 +81,11 @@ public class MainWindow extends JFrame {
 		contentPane.add(panel_3);
 		panel_3.setLayout(null);
 
-		startButton = new JButton("Start new diagnosis!");
+		startButton = new JButton("Rozpocznij nową diagnozę!");
 		startButton.setFont(new Font("SansSerif", Font.PLAIN, 17));
 		startButton.setBackground(new Color(51, 153, 255));
 		startButton.setForeground(Color.WHITE);
-		startButton.setBounds(148, 11, 212, 51);
+		startButton.setBounds(132, 11, 243, 51);
 		panel_3.add(startButton);
 
 		JPanel panel = new JPanel();
