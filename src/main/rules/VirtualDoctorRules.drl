@@ -20,6 +20,14 @@ rule "Init"
 		insert(diagnosis);
 end
 
+rule "Answer"
+	salience(-10000000)
+	when 
+	then
+		questionCommunicator.createNoCallbackNotification("Nope");
+		drools.halt();
+	end
+
 rule "End"
 	salience(10000000)
 	when dbl : Double()
