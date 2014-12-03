@@ -13,7 +13,23 @@ public class DiagnosisMaster extends Thread {
 	private Question meal = Question.NOT_ASKED;
 	private Question nausea = Question.NOT_ASKED;
 	private Question voiding = Question.NOT_ASKED;
-
+	private Question longLastingCold = Question.NOT_ASKED;
+	private Question cough = Question.NOT_ASKED;
+	private Question asthma = Question.NOT_ASKED;
+	private Question pneumoniaOrBronchitis = Question.NOT_ASKED;
+	private Question strongEmotions = Question.NOT_ASKED;
+	private Question heartPalpitation = Question.NOT_ASKED;
+	private Question chestQuestions = Question.NOT_ASKED;
+	private Question stingingEyes = Question.NOT_ASKED;
+	private Question rash = Question.NOT_ASKED;
+	private Question stomachQuestions = Question.NOT_ASKED;
+	private Question navel = Question.NOT_ASKED;
+	private Question headAche = Question.NOT_ASKED;
+	private Question soreThroat = Question.NOT_ASKED;
+	private Question radiatingPain = Question.NOT_ASKED;
+	private Question menstrualCycleDisorder = Question.NOT_ASKED;
+	private Question genialTractBleeding = Question.NOT_ASKED;
+	
 	public Question isStomachPain() {
 		return stomachPain;
 	}
@@ -142,5 +158,150 @@ public class DiagnosisMaster extends Thread {
 	public Question isVoiding() {
 		return voiding;
 	}
+	public void setLongLastingCold(boolean longLastingCold) {
+		if (longLastingCold) {
+			this.longLastingCold = Question.TRUE;
+		} else
+			this.longLastingCold = Question.FALSE;
+	}
 
+	public Question isLongLastingCold() {
+		return longLastingCold;
+	}
+	public void setCough(boolean cough) {
+		if (cough) {
+			this.cough = Question.TRUE;
+		} else
+			this.cough = Question.FALSE;
+	}
+	public Question isCough() {
+		return cough;
+	}
+	public void setAsthma(boolean asthma) {
+		if (asthma) {
+			this.asthma = Question.TRUE;
+		} else
+			this.asthma = Question.FALSE;
+	}
+	public Question isAsthma() {
+		return asthma;
+	}
+	public void setPneumoniaOrBronchitis(boolean pneumoniaOrBronchitis) {
+		if (pneumoniaOrBronchitis) {
+			this.pneumoniaOrBronchitis = Question.TRUE;
+		} else
+			this.pneumoniaOrBronchitis = Question.FALSE;
+	}
+	public Question isPneumoniaOrBronchitis() {
+		return pneumoniaOrBronchitis;
+	}
+	public void setStrongEmotions(boolean strongEmotions) {
+		if (strongEmotions) {
+			this.strongEmotions = Question.TRUE;
+		} else
+			this.strongEmotions = Question.FALSE;
+	}
+	public Question isStrongEmotions() {
+		return strongEmotions;
+	}
+	public void setHeartPalpitation(boolean heartPalpitation) {
+		if (heartPalpitation) {
+			this.heartPalpitation = Question.TRUE;
+		} else
+			this.heartPalpitation = Question.FALSE;
+	}
+	public Question isHeartPalpitation() {
+		return heartPalpitation;
+	}
+	public void setChestQuestions(boolean chestQuestions) {
+		if (chestQuestions) {
+			this.chestQuestions = Question.TRUE;
+		} else
+			this.chestQuestions = Question.FALSE;
+	}
+	public Question isChestQuestions() {
+		return chestQuestions;
+	}
+	public void setStingingEyes(boolean stingingEyes) {
+		if (stingingEyes) {
+			this.stingingEyes = Question.TRUE;
+		} else
+			this.stingingEyes = Question.FALSE;
+	}
+	public Question isStingingEyes() {
+		return stingingEyes;
+	}
+	public void setRash(boolean rash) {
+		if (rash) {
+			this.rash = Question.TRUE;
+		} else
+			this.rash = Question.FALSE;
+	}
+	public Question isRash() {
+		return rash;
+	}
+	public void setStomachQuestions(boolean stomachQuestions) {
+		if (stomachQuestions) {
+			this.stomachQuestions = Question.TRUE;
+		} else
+			this.stomachQuestions = Question.FALSE;
+	}
+	public Question isStomachQuestions() {
+		return stomachQuestions;
+	}
+	public void setNavel(boolean navel) {
+		if (navel) {
+			this.navel = Question.TRUE;
+		} else
+			this.navel = Question.FALSE;
+	}
+	public Question isNavel() {
+		return navel;
+	}
+	public void setHeadAche(boolean headAche) {
+		if (headAche) {
+			this.headAche = Question.TRUE;
+		} else
+			this.headAche = Question.FALSE;
+	}
+	public Question isHeadAche() {
+		return headAche;
+	}
+	public void setSoreThroat(boolean soreThroat) {
+		if (soreThroat) {
+			this.soreThroat = Question.TRUE;
+		} else
+			this.soreThroat = Question.FALSE;
+	}
+	public Question isSoreThroat() {
+		return soreThroat;
+	}
+	public void setRadiatingPain(boolean radiatingPain) {
+		if (radiatingPain) {
+			this.radiatingPain = Question.TRUE;
+		} else
+			this.radiatingPain = Question.FALSE;
+	}
+	public Question isRadiatingPain() {
+		return radiatingPain;
+	}
+	public void setGenialTractBleeding(boolean genialTractBleeding) {
+		if (genialTractBleeding) {
+			this.genialTractBleeding = Question.TRUE;
+		} else
+			this.genialTractBleeding = Question.FALSE;
+	}
+	public Question isGenialTractBleeding() {
+		return genialTractBleeding;
+	}
+	public void setMenstrualCycleDisorder(boolean menstrualCycleDisorder) {
+		if (menstrualCycleDisorder) {
+			this.menstrualCycleDisorder = Question.TRUE;
+		} else
+			this.menstrualCycleDisorder = Question.FALSE;
+	}
+	public Question isMenstrualCycleDisorder() {
+		return menstrualCycleDisorder;
+	}
+	
 }

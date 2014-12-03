@@ -43,74 +43,340 @@ rule "Stomach"
 		update(diagnosis);
 end
 
+
+rule "ChestQuestion"
+    when d : DiagnosisMaster(d.isChestPain() == Question.TRUE, d.isChestQuestions == Question.NOT_ASKED)
+    then
+    	d.setChestQuestions(true);
+    	String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion(
+    	"What hurts you? Where does it hurt you?", new String[] {"uczucie duszności", "przyspieszony oddech",
+    	 "złe ciśnienie tętnicze"});
+		for(String ans : compoundAnswer.clone()) {
+			insert(ans);
+		}
+    end
+    
+rule "StomachQuestion"
+    when d : DiagnosisMaster(d.isStomachPain() == Question.TRUE, d.isStomachQuestions == Question.NOT_ASKED)
+    then
+    	d.setStomachQuestions(true);
+    	String ans = questionCommunicator.createSelectOptionQuestion(
+    	"Where does it hurt you?", new String[] {"podbrzusze", "okolice pępka"});
+		insert(ans);		
+    end
+
 rule "Stuffiness"
-    when d : DiagnosisMaster(d.isChestPain() == Question.TRUE, d.isStuffiness() == Question.NOT_ASKED )
+    when s : String(s == "uczucie duszności")
     then
-        d.setStuffiness(questionCommunicator.createQuestion("Are you sufferring from stuffiness?"));
-        System.out.println(d.isStomachPain());
-        update(d);
+        diagnosis.setStuffiness(true);
+        update(diagnosis);
     end
 
-rule "StuffinessAfterSports"
-    when d : DiagnosisMaster(d.isStuffiness() == Question.TRUE)
+rule "SteppedUpBreath"
+    when s : String(s == "przyspieszony oddech")
     then
-        d.setSportStuffiness(questionCommunicator.createQuestion("Do your breathing problems escalate after doing sports?"));
-        update(d);
-    end 
-    
+        diagnosis.setSteppedUpBreath(true);
+        update(diagnosis);
+    end
+
 rule "BloodPressure"
-    when d : DiagnosisMaster(d.isSportStuffiness() == Question.TRUE)
+    when s : String(s == "złe ciśnienie tętnicze")
     then
-        d.setBloodPressure(questionCommunicator.createQuestion("Is your blood pressure ok?"));
+        diagnosis.setBloodPressure(true);
+        update(diagnosis);
+    end
+
+rule "Abdomen"
+    when s : String(s == "podbrzusze")
+    then
+        diagnosis.setAbdomen(true);
+        update(diagnosis);
+    end
+    
+rule "Navel"
+    when s : String(s == "okolice pępka")
+    then
+        diagnosis.setNavel(true);
+        update(diagnosis);
+    end
+        
+rule "StuffinessAfterSports"
+    when d : DiagnosisMaster(d.isStuffiness() == Question.TRUE, d.isSportStuffiness() == Question.NOT_ASKED)
+    then
+        d.setSportStuffiness(questionCommunicator.createQuestion("Czy problemy z dusznością nasilają przy wysiłku fizycznym?"));
         update(d);
     end 
     
-rule "Pulmonologist"
-    when d : DiagnosisMaster(d.isBloodPressure() == Question.TRUE)
+rule "LongLastingCold"
+    when d : DiagnosisMaster(d.isStuffiness() == Question.TRUE, d.isLongLastingCold() == Question.NOT_ASKED)
     then
-        System.out.println("Pulmonologist");
-    end 
+        d.setLongLastingCold(questionCommunicator.createQuestion("Czy masz długotrwały katar i często kichasz?"));
+        update(d);
+    end
     
-rule "Cardiologist"
-    when d : DiagnosisMaster(d.isBloodPressure() == Question.FALSE)
+rule "LongLastingColdCough"
+    when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isCough() == Question.NOT_ASKED)
     then
-        System.out.println("Cardiologist");
-    end       
-//--9 
-rule "Abdomen" //podbrzusze
-    when d : DiagnosisMaster(d.isStomachPain() == Question.TRUE)
+        d.setCough(questionCommunicator.createQuestion("Czy masz długotrwały kaszel?"));
+        update(d);
+    end
+    
+rule "LongLastingColdAsthma"
+    when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isAsthma() == Question.NOT_ASKED)
     then
-        d.setAbdomen(questionCommunicator.createQuestion("Does your abdomen hurt?"));
+        d.setAsthma(questionCommunicator.createQuestion("Czy masz astmę?"));
         update(d);
     end
 
-rule "Meal"
-	when d : DiagnosisMaster(d.isAbdomen() == Question.FALSE)
-	then
-		d.setMeal(questionCommunicator.createQuestion("Is your pain connected with meals you eat?"));
-		System.out.println(d.isChestPain());
-		update(d);
-	end
-
-rule "Nausea" //nudnosci
-    when d : DiagnosisMaster(d.isMeal() == Question.TRUE)
+rule "LongLastingColdPneumoniaOrBronchitis"
+    when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isPneumoniaOrBronchitis() == Question.NOT_ASKED)
     then
-        d.setNausea(questionCommunicator.createQuestion("Do you feel nauseous?"));
+        d.setPneumoniaOrBronchitis(questionCommunicator.createQuestion("Czy przechodziłeś ostatnio zapalenie płuc lub oskrzeli?"));
+        update(d);
+    end
+    
+rule "LongLastingColdStingingEyes"
+    when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isStingingEyes() == Question.NOT_ASKED)
+    then
+        d.setStingingEyes(questionCommunicator.createQuestion("Czy często odczuwasz szczypanie oczu?"));
+        update(d);
+    end
+    
+rule "LongLastingColdRash"
+    when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isRash() == Question.NOT_ASKED)
+    then
+        d.setRash(questionCommunicator.createQuestion("Czy masz wysypkę?"));
         update(d);
     end
 
-rule "Gastrologist"
+rule "RashAlergologist"
+    when d : DiagnosisMaster(d.isRash() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Alergologist");
+    end
+    
+rule "StingingEyesAlergologist"
+    when d : DiagnosisMaster(d.isStingingEyes() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Alergologist");
+    end
+    
+rule "StufinessCough"
+    when d : DiagnosisMaster(d.isSportStuffiness() == Question.TRUE, d.isCough() == Question.NOT_ASKED)
+    then
+        d.setCough(questionCommunicator.createQuestion("Czy masz długotrwały kaszel?"));
+        update(d);
+    end
+    
+rule "StufinessAsthma"
+    when d : DiagnosisMaster(d.isSportStuffiness() == Question.TRUE, d.isAsthma() == Question.NOT_ASKED)
+    then
+        d.setAsthma(questionCommunicator.createQuestion("Czy masz astmę?"));
+        update(d);
+    end
+
+rule "StufinessPneumoniaOrBronchitis"
+    when d : DiagnosisMaster(d.isSportStuffiness() == Question.TRUE, d.isPneumoniaOrBronchitis() == Question.NOT_ASKED)
+    then
+        d.setPneumoniaOrBronchitis(questionCommunicator.createQuestion("Czy przechodziłeś ostatnio zapalenie płuc lub oskrzeli?"));
+        update(d);
+    end
+    
+rule "PneumoniaOrBronchitisPulmonologist"
+    when d : DiagnosisMaster(d.isPneumoniaOrBronchitis() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Pulmonologist");
+    end
+            
+rule "CoughPulmonologist"
+    when d : DiagnosisMaster(d.isCough() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Pulmonologist");
+    end
+
+rule "AsthmaPulmonologist"
+    when d : DiagnosisMaster(d.isAsthma() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Pulmonologist");
+    end
+
+rule "StuffinessStrongEmotions"
+    when d : DiagnosisMaster(d.isSportStuffiness() == Question.TRUE, d.isStrongEmotions() == Question.NOT_ASKED)
+    then
+        d.setStrongEmotions(questionCommunicator.createQuestion("Czy cierpisz na ból w klatce podczas odczuwania silnych emocji?"));
+        update(d);
+    end      
+
+rule "StuffinessHeartPalpiatation"
+    when d : DiagnosisMaster(d.isSportStuffiness() == Question.TRUE, d.isHeartPalpitation() == Question.NOT_ASKED)
+    then
+        d.setHeartPalpitation(questionCommunicator.createQuestion("Czy odczuwasz kołatanie serca?"));
+        update(d);
+    end
+    
+rule "StronEmotionsCardiologist"
+    when d : DiagnosisMaster(d.isStrongEmotions() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Cardiologist");
+    end
+
+rule "HeartPalpitationcardiologist"
+    when d : DiagnosisMaster(d.isHeartPalpitation() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Cardiologist");
+    end
+      
+rule "BloodPressureStrongEmotions"
+    when d : DiagnosisMaster(d.isBloodPressure() == Question.TRUE, d.isStrongEmotions() == Question.NOT_ASKED)
+    then
+        d.setStrongEmotions(questionCommunicator.createQuestion("Czy cierpisz na ból w klatce podczas odczuwania silnych emocji?"));
+        update(d);
+    end      
+
+rule "BloodPressureHeartPalpiatation"
+    when d : DiagnosisMaster(d.isBloodPressure() == Question.TRUE, d.isHeartPalpitation() == Question.NOT_ASKED)
+    then
+        d.setHeartPalpitation(questionCommunicator.createQuestion("Czy odczuwasz kołatanie serca?"));
+        update(d);
+    end
+    
+rule "SteppedUpBreathStrongEmotions"
+    when d : DiagnosisMaster(d.isSteppedUpBreath() == Question.TRUE, d.isStrongEmotions() == Question.NOT_ASKED)
+    then
+        d.setStrongEmotions(questionCommunicator.createQuestion("Czy cierpisz na ból w klatce podczas odczuwania silnych emocji?"));
+        update(d);
+    end      
+
+rule "SteppedUpBreathHeartPalpiatation"
+    when d : DiagnosisMaster(d.isSteppedUpBreath() == Question.TRUE, d.isHeartPalpitation() == Question.NOT_ASKED)
+    then
+        d.setHeartPalpitation(questionCommunicator.createQuestion("Czy odczuwasz kołatanie serca?"));
+        update(d);
+    end
+    
+rule "SteppedUpBreathAsthma"
+    when d : DiagnosisMaster(d.isSteppedUpBreath() == Question.TRUE, d.isAsthma() == Question.NOT_ASKED)
+    then
+        d.setAsthma(questionCommunicator.createQuestion("Czy masz astmę?"));
+        update(d);
+    end
+
+rule "SteppedUpBreathPneumoniaOrBronchitis"
+    when d : DiagnosisMaster(d.isSteppedUpBreath() == Question.TRUE, d.isPneumoniaOrBronchitis() == Question.NOT_ASKED)
+    then
+        d.setPneumoniaOrBronchitis(questionCommunicator.createQuestion("Czy przechodziłeś ostatnio zapalenie płuc lub oskrzeli?"));
+        update(d);
+    end
+    
+rule "SteppedUpBreathCough"
+    when d : DiagnosisMaster(d.isSteppedUpBreath() == Question.TRUE, d.isCough() == Question.NOT_ASKED)
+    then
+        d.setCough(questionCommunicator.createQuestion("Czy masz długotrwały kaszel?"));
+        update(d);
+    end
+    
+rule "NavelNausea"
+	when d : DiagnosisMaster(d.isNavel() == Question.TRUE, d.isNausea() == Question.NOT_ASKED)
+    then
+         d.setNausea(questionCommunicator.createQuestion("Czy masz nudności?"));
+         update(d);
+    end
+    
+rule "NavelMeal"
+	when d : DiagnosisMaster(d.isNavel() == Question.TRUE, d.isMeal() == Question.NOT_ASKED)
+    then
+         d.setMeal(questionCommunicator.createQuestion("Czy ból związany jest z posiłkami?"));
+         update(d);
+    end
+
+rule "NauseaGastrologist"
     when d : DiagnosisMaster(d.isNausea() == Question.TRUE)
     then
-       	questionCommunicator.createNoCallbackNotification("Gastrologist");
-       	drools.halt();
-        System.out.println("Gastrologist");
+       questionCommunicator.createNoCallbackNotification("Gastrologist");
+    end    
+
+rule "MealGastrologist"
+    when d : DiagnosisMaster(d.isMeal() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Gastrologist");
+    end    
+    
+rule "NavelHeadache"
+	when d : DiagnosisMaster(d.isNavel() == Question.TRUE, d.isHeadAche() == Question.NOT_ASKED)
+    then
+         d.setHeadAche(questionCommunicator.createQuestion("Czy odczuwasz ból głowy?"));
+         update(d);
+    end
+
+rule "NavelSoreThroat"
+	when d : DiagnosisMaster(d.isNavel() == Question.TRUE, d.isSoreThroat() == Question.NOT_ASKED)
+    then
+         d.setSoreThroat(questionCommunicator.createQuestion("Czy odczuwasz ból gardła?"));
+         update(d);
+    end  
+    
+rule "HeadAchePhysician"
+    when d : DiagnosisMaster(d.isHeadAche() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Physician");
+    end 
+    
+rule "SoreThroatPhysician"
+    when d : DiagnosisMaster(d.isSoreThroat() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Physician");
+    end    
+    
+rule "AbdomenVoiding"
+	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isVoiding() == Question.NOT_ASKED)
+    then
+         d.setVoiding(questionCommunicator.createQuestion("Czy masz problemy z mikcją?"));
+         update(d);
+    end
+    
+rule "AbdomenRadiatingPain"
+	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isRadiatingPain() == Question.NOT_ASKED)
+    then
+         d.setRadiatingPain(questionCommunicator.createQuestion("Czy ból ma charakter promieniujący?"));
+         update(d);
+    end
+    
+rule "RadiatingPainUrologist"
+    when d : DiagnosisMaster(d.isRadiatingPain() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Urologist");
+    end  
+    
+rule "VoidingUrologist"
+    when d : DiagnosisMaster(d.isVoiding() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Urologist");
     end 
 
-rule "Voiding"
-	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isVoiding() == Question.NOT_ASKED )
-	then
-		d.setVoiding(questionCommunicator.createQuestion("Is your pain connected with the voiding?"));
-		System.out.println(d.isChestPain());
-		update(d);
-	end
+rule "AbdomenGenialTractBleeding"
+	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isGenialTractBleeding() == Question.NOT_ASKED, d.getSex() == "female")
+    then
+         d.setGenialTractBleeding(questionCommunicator.createQuestion("Czy pojawiają się patologiczne krwawienia z dróg rodnych?"));
+         update(d);
+    end
+    
+rule "AbdomenMenstrualCycleDisorder"
+	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isMenstrualCycleDisorder() == Question.NOT_ASKED, d.getSex() == "female")
+    then
+         d.setMenstrualCycleDisorder(questionCommunicator.createQuestion("Czy pojawiają się zaburzenia cyklu miesiączkowego?"));
+         update(d);
+    end
+    
+rule "MenstrualCycleDisorderGynecologist"
+    when d : DiagnosisMaster(d.isMenstrualCycleDisorder() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Gynecologist");
+    end 
+
+rule "GenialTractBleedingGynecologist"
+    when d : DiagnosisMaster(d.isGenialTractBleeding() == Question.TRUE)
+    then
+       questionCommunicator.createNoCallbackNotification("Gynecologist");
+    end 
+ 
+
