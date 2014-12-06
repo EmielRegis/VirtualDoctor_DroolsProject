@@ -69,7 +69,6 @@ public class RulesRuler implements Runnable
 	         KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(kSession, "test");           
 
 	         kSession.setGlobal("questionCommunicator", qCom);
-	         kSession.setGlobal("diagnosis", new DiagnosisMaster());
 	            
 	         kSession.fireUntilHalt();
 

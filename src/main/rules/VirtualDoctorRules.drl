@@ -1,7 +1,7 @@
 package com.sample;
 
 global QuestionCommunicator questionCommunicator;
-global DiagnosisMaster diagnosis;
+
 
 import org.drools.marshalling.impl.ProtobufMessages
 
@@ -9,15 +9,12 @@ rule "Init"
     when
     then
         System.out.println("Inicjalizuję...");
-        boolean age = questionCommunicator.createQuestion("Czy jesteś osobą dorosłą?");
-		String sex =  questionCommunicator.createSelectOptionQuestion("Twoja płeć to:", new String[] {"mężczyzna", "kobieta"});
-		diagnosis.setSex(sex);
-		diagnosis.setOverEighteeen(age);
+        insert (new DiagnosisFact("isOverEightenn", questionCommunicator.createQuestion("Czy jesteś osobą dorosłą?")));
+		insert (new DiagnosisFact ("isSex", questionCommunicator.createSelectOptionQuestion("Twoja płeć to:", new String[] {"mężczyzna", "kobieta"})));
         String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion("Czy boli Cię:", new String[] {"klatka piersiowa", "brzuch", "głowa"});
 		for(String ans : compoundAnswer.clone()) {
 			insert(ans);
 		}
-		insert(diagnosis);
 end
 
 rule "End"
@@ -31,31 +28,30 @@ rule "Chest"
 	salience(1000)
 	when s: String(s == "klatka piersiowa")
 	then
-		diagnosis.setChestPain(true);
-		update(diagnosis);
+		insert (new DiagnosisFact("isChestPain", true));
 end
 
 rule "Stomach"
 	salience(1000)
 	when s: String(s == "brzuch")
 	then
-		diagnosis.setStomachPain(true);
-		update(diagnosis);
+		insert (new DiagnosisFact("isStomachPain", true));
 end
 
 rule "Head"
 	salience(1000)
 	when s: String(s == "głowa")
 	then
-		diagnosis.setHeadAche(true);
-		update(diagnosis);
+		insert (new DiagnosisFact("isHeadAche", true));
 end
 
 
 rule "ChestQuestion"
-    when d : DiagnosisMaster(d.isChestPain() == Question.TRUE, d.isChestQuestions == Question.NOT_ASKED)
+    when 
+    	 d : DiagnosisFact(d.name.equals("isChestPain"), d.status == Question.TRUE)
+    	 not (exists DiagnosisFact(name.equals("isChestQuestions")))
     then
-    	d.setChestQuestions(true);
+    	insert (new DiagnosisFact("isChestQuestions"));
     	String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion(
     	"Które z wymienionych objawów dotyczą Ciebie?", new String[] {"uczucie duszności", "przyspieszony oddech",
     	 "złe ciśnienie tętnicze"});
@@ -65,18 +61,22 @@ rule "ChestQuestion"
     end
     
 rule "StomachQuestion"
-    when d : DiagnosisMaster(d.isStomachPain() == Question.TRUE, d.isStomachQuestions == Question.NOT_ASKED)
+    when
+    	 d : DiagnosisFact(d.name.equals("isStomachPain"), d.status == Question.TRUE)
+    	 not (exists DiagnosisFact(name.equals("isStomachQuestions")))
     then
-    	d.setStomachQuestions(true);
+    	insert (new DiagnosisFact("isStomachQuestions"));
     	String ans = questionCommunicator.createSelectOptionQuestion(
     	"Sprecyzuj miejsce bólu.", new String[] {"podbrzusze", "okolice pępka"});
 		insert(ans);		
     end
     
 rule "HeadAcheQuestion"
-    when d : DiagnosisMaster(d.isHeadAche() == Question.TRUE, d.isHeadAcheQuestions == Question.NOT_ASKED)
+    when 
+   	 	 d : DiagnosisFact(d.name.equals("isHeadAche"), d.status == Question.TRUE)
+    	 not (exists DiagnosisFact(name.equals("isHeadAcheQuestions")))
     then
-    	d.setHeadAcheQuestions(true);
+    	insert (new DiagnosisFact("isHeadAcheQuestions"));
     	String[] compoundAnswer = questionCommunicator.createSelectOptionsQuestion(
     	"Które z wymienionych objawów dotyczą Ciebie?", new String[] {"ból zatok", "problemy ze słuchem",
     	 "złe ciśnienie tętnicze", "problemy ze wzrokiem", "migrena" });
@@ -88,465 +88,505 @@ rule "HeadAcheQuestion"
 rule "Stuffiness"
     when s : String(s == "uczucie duszności")
     then
-        diagnosis.setStuffiness(true);
-        update(diagnosis);
+        insert (new DiagnosisFact("isStuffiness", true));
     end
 
 rule "SteppedUpBreath"
     when s : String(s == "przyspieszony oddech")
     then
-        diagnosis.setSteppedUpBreath(true);
-        update(diagnosis);
+        insert (new DiagnosisFact("isSteppedUpBreath", true));
     end
 
 rule "BloodPressure"
     when s : String(s == "złe ciśnienie tętnicze")
     then
-        diagnosis.setBloodPressure(true);
-        update(diagnosis);
+        insert (new DiagnosisFact("isBloodPresure", true));
     end
 
 rule "Abdomen"
     when s : String(s == "podbrzusze")
     then
-        diagnosis.setAbdomen(true);
-        update(diagnosis);
+        insert (new DiagnosisFact("isAbdomen", true));
     end
     
 rule "Navel"
     when s : String(s == "okolice pępka")
     then
-        diagnosis.setNavel(true);
-        update(diagnosis);
+        insert (new DiagnosisFact("isNavel", true));
     end
     
 rule "SinusesAche"
     when s : String(s == "ból zatok")
     then
-        diagnosis.setSinusesAche(true);
-        update(diagnosis);
+        insert (new DiagnosisFact("isSinusesAche", true));
     end
     
 rule "EarsAche"
     when s : String(s == "problemy ze słuchem")
     then
-        diagnosis.setEarsAche(true);
-        update(diagnosis);
+        insert (new DiagnosisFact("isEarsAche", true));
     end 
 
 rule "Eyesight"
     when s : String(s == "problemy ze wzrokiem")
     then
-        diagnosis.setEyesight(true);
-        update(diagnosis);
+        insert (new DiagnosisFact("isEyesight", true));
     end    
 
 rule "Migraine"
     when s : String(s == "migrena")
     then
-        diagnosis.setMigraine(true);
-        update(diagnosis);
+        insert (new DiagnosisFact("isMigraine", true));
     end    
         
 rule "StuffinessAfterSports"
-    when d : DiagnosisMaster(d.isStuffiness() == Question.TRUE, d.isSportStuffiness() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isStuffiness"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isSportStuffiness")))
     then
-        d.setSportStuffiness(questionCommunicator.createQuestion("Czy problemy z dusznością nasilają przy wysiłku fizycznym?"));
-        update(d);
+    	insert (new DiagnosisFact("isSportStuffiness", questionCommunicator.createQuestion("Czy problemy z dusznością nasilają przy wysiłku fizycznym?")));
     end 
     
 rule "LongLastingCold"
-    when d : DiagnosisMaster(d.isStuffiness() == Question.TRUE, d.isLongLastingCold() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isStuffiness"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isLongLastingCold")))
     then
-        d.setLongLastingCold(questionCommunicator.createQuestion("Czy masz długotrwały katar i często kichasz?"));
-        update(d);
+    	insert (new DiagnosisFact("isLongLastingCold", questionCommunicator.createQuestion("Czy masz długotrwały katar i często kichasz?")));
     end
     
 rule "LongLastingColdCough"
-    when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isCough() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isLongLastingCold"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isCough")))
     then
-        d.setCough(questionCommunicator.createQuestion("Czy masz długotrwały kaszel?"));
-        update(d);
+    	insert (new DiagnosisFact("isCough", questionCommunicator.createQuestion("Czy masz długotrwały kaszel?")));
     end
     
 rule "LongLastingColdAsthma"
-    when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isAsthma() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isLongLastingCold"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isAsthma")))
     then
-        d.setAsthma(questionCommunicator.createQuestion("Czy masz astmę?"));
-        update(d);
+    	insert (new DiagnosisFact("isAsthma", questionCommunicator.createQuestion("Czy masz astmę?")));
     end
 
 rule "LongLastingColdPneumoniaOrBronchitis"
-    when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isPneumoniaOrBronchitis() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isLongLastingCold"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isPneumoniaOrBronchitis")))
     then
-        d.setPneumoniaOrBronchitis(questionCommunicator.createQuestion("Czy przechodziłeś ostatnio zapalenie płuc lub oskrzeli?"));
-        update(d);
+    	insert (new DiagnosisFact("isPneumoniaOrBronchitis", questionCommunicator.createQuestion("Czy przechodziłeś ostatnio zapalenie płuc lub oskrzeli?")));
     end
     
 rule "LongLastingColdStingingEyes"
-    when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isStingingEyes() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isLongLastingCold"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isStingingEyes")))
     then
-        d.setStingingEyes(questionCommunicator.createQuestion("Czy często odczuwasz pieczenie oczu?"));
-        update(d);
+        	insert (new DiagnosisFact("isStingingEyes", questionCommunicator.createQuestion("Czy często odczuwasz pieczenie oczu?")));
     end
     
 rule "LongLastingColdRash"
-    when d : DiagnosisMaster(d.isLongLastingCold() == Question.TRUE, d.isRash() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isLongLastingCold"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isRash")))
     then
-        d.setRash(questionCommunicator.createQuestion("Czy miewasz wysypki?"));
-        update(d);
+        	insert (new DiagnosisFact("isRash", questionCommunicator.createQuestion("Czy miewasz wysypki?")));
+
     end
 
 rule "RashAlergologist"
-    when d : DiagnosisMaster(d.isRash() == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isRash"), d.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u alergologa");
        drools.halt();
     end
     
 rule "StingingEyesAlergologist"
-    when d : DiagnosisMaster(d.isStingingEyes() == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isStingingEyes"), d.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u alergologa");
        drools.halt();
     end
     
 rule "StufinessCough"
-    when d : DiagnosisMaster(d.isSportStuffiness() == Question.TRUE, d.isCough() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSportStuffiness"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isCough")))
     then
-        d.setCough(questionCommunicator.createQuestion("Czy masz długotrwały kaszel?"));
-        update(d);
+        	insert (new DiagnosisFact("isCough", questionCommunicator.createQuestion("Czy masz długotrwały kaszel?")));
     end
     
 rule "StufinessAsthma"
-    when d : DiagnosisMaster(d.isSportStuffiness() == Question.TRUE, d.isAsthma() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSportStuffiness"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isAsthma")))
     then
-        d.setAsthma(questionCommunicator.createQuestion("Czy masz astmę?"));
-        update(d);
+        	insert (new DiagnosisFact("isAthma", questionCommunicator.createQuestion("Czy masz astmę?")));
     end
 
 rule "StufinessPneumoniaOrBronchitis"
-    when d : DiagnosisMaster(d.isSportStuffiness() == Question.TRUE, d.isPneumoniaOrBronchitis() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSportStuffiness"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isPneumoniaOrBronchitis")))
     then
-        d.setPneumoniaOrBronchitis(questionCommunicator.createQuestion("Czy przechodziłeś ostatnio zapalenie płuc lub oskrzeli?"));
-        update(d);
+        	insert (new DiagnosisFact("isPneumoniaOrBronchitis", questionCommunicator.createQuestion("Czy przechodziłeś ostatnio zapalenie płuc lub oskrzeli?")));
     end
     
 rule "PneumoniaOrBronchitisPulmonologist"
-    when d : DiagnosisMaster(d.isPneumoniaOrBronchitis() == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isPneumoniaOrBronchitis"), d.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u pulmonologa");
        drools.halt();
     end
             
 rule "CoughPulmonologist"
-    when d : DiagnosisMaster(d.isCough() == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isCough"), d.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u pulmonologa");
        drools.halt();
     end
 
 rule "AsthmaPulmonologist"
-    when d : DiagnosisMaster(d.isAsthma() == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isAsthma"), d.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u pulmonologa");
        drools.halt();
     end
 
 rule "StuffinessStrongEmotions"
-    when d : DiagnosisMaster(d.isSportStuffiness() == Question.TRUE, d.isStrongEmotions() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSportStuffiness"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isStrongEmotions")))
     then
-        d.setStrongEmotions(questionCommunicator.createQuestion("Czy cierpisz na ból w klatce podczas odczuwania silnych emocji?"));
-        update(d);
+    	insert (new DiagnosisFact("isStrongEmotions", questionCommunicator.createQuestion("Czy cierpisz na ból w klatce podczas odczuwania silnych emocji?")));
     end      
 
 rule "StuffinessHeartPalpiatation"
-    when d : DiagnosisMaster(d.isSportStuffiness() == Question.TRUE, d.isHeartPalpitation() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSportStuffiness"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isHeartPalpitation")))
     then
-        d.setHeartPalpitation(questionCommunicator.createQuestion("Czy odczuwasz kołatanie serca?"));
-        update(d);
+    	insert (new DiagnosisFact("isHeartPalipation", questionCommunicator.createQuestion("Czy odczuwasz kołatanie serca?")));
     end
     
 rule "StronEmotionsCardiologist"
-    when d : DiagnosisMaster(d.isStrongEmotions() == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isStrongEmotions"), d.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u kardiologa");
        drools.halt();
     end
 
 rule "HeartPalpitationcardiologist"
-    when d : DiagnosisMaster(d.isHeartPalpitation() == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isHeartPalpitation"), d.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u kardiologa");
        drools.halt();
     end
       
 rule "BloodPressureStrongEmotions"
-    when d : DiagnosisMaster(d.isBloodPressure() == Question.TRUE, d.isStrongEmotions() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isBloodPressure"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isStrongEmotions")))
     then
-        d.setStrongEmotions(questionCommunicator.createQuestion("Czy cierpisz na ból w klatce podczas odczuwania silnych emocji?"));
-        update(d);
+    	insert (new DiagnosisFact("isStrongEmotions", questionCommunicator.createQuestion("Czy cierpisz na ból w klatce podczas odczuwania silnych emocji?")));
     end      
 
 rule "BloodPressureHeartPalpiatation"
-    when d : DiagnosisMaster(d.isBloodPressure() == Question.TRUE, d.isHeartPalpitation() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isBloodPressure"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isHeartPalpitation")))
     then
-        d.setHeartPalpitation(questionCommunicator.createQuestion("Czy odczuwasz kołatanie serca?"));
-        update(d);
+    	insert (new DiagnosisFact("isHeartPalpitation", questionCommunicator.createQuestion("Czy odczuwasz kołatanie serca?")));
     end
     
 rule "SteppedUpBreathStrongEmotions"
-    when d : DiagnosisMaster(d.isSteppedUpBreath() == Question.TRUE, d.isStrongEmotions() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSteppedUpBreath"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isStrongEmotions")))
     then
-        d.setStrongEmotions(questionCommunicator.createQuestion("Czy cierpisz na ból w klatce podczas odczuwania silnych emocji?"));
-        update(d);
+    	insert (new DiagnosisFact("isStrongEmotions", questionCommunicator.createQuestion("Czy cierpisz na ból w klatce podczas odczuwania silnych emocji?")));
     end      
 
 rule "SteppedUpBreathHeartPalpiatation"
-    when d : DiagnosisMaster(d.isSteppedUpBreath() == Question.TRUE, d.isHeartPalpitation() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSteppedUpBreath"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isHeartPalipation")))
     then
-        d.setHeartPalpitation(questionCommunicator.createQuestion("Czy odczuwasz kołatanie serca?"));
-        update(d);
+    	insert (new DiagnosisFact("isHeartPalpitation", questionCommunicator.createQuestion("Czy odczuwasz kołatanie serca?")));
     end
     
 rule "SteppedUpBreathAsthma"
-    when d : DiagnosisMaster(d.isSteppedUpBreath() == Question.TRUE, d.isAsthma() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSteppedUpBreath"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isAsthma")))
     then
-        d.setAsthma(questionCommunicator.createQuestion("Czy masz astmę?"));
-        update(d);
+    	insert (new DiagnosisFact("isAsthma", questionCommunicator.createQuestion("Czy masz astmę?")));
     end
 
 rule "SteppedUpBreathPneumoniaOrBronchitis"
-    when d : DiagnosisMaster(d.isSteppedUpBreath() == Question.TRUE, d.isPneumoniaOrBronchitis() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSteppedUpBreath"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isPneumoniaOrBronchitis")))
     then
-        d.setPneumoniaOrBronchitis(questionCommunicator.createQuestion("Czy przechodziłeś ostatnio zapalenie płuc lub oskrzeli?"));
-        update(d);
+    	insert (new DiagnosisFact("isPneumoniaOrBronchitis", questionCommunicator.createQuestion("Czy przechodziłeś ostatnio zapalenie płuc lub oskrzeli?")));
     end
     
 rule "SteppedUpBreathCough"
-    when d : DiagnosisMaster(d.isSteppedUpBreath() == Question.TRUE, d.isCough() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSteppedUpBreath"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isCough")))
     then
-        d.setCough(questionCommunicator.createQuestion("Czy masz długotrwały kaszel?"));
-        update(d);
+    	insert (new DiagnosisFact("isCough", questionCommunicator.createQuestion("Czy masz długotrwały kaszel?")));
     end
     
 rule "NavelNausea"
-	when d : DiagnosisMaster(d.isNavel() == Question.TRUE, d.isNausea() == Question.NOT_ASKED)
+	when 
+    	d : DiagnosisFact(d.name.equals("isNavel"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isNausea")))
     then
-         d.setNausea(questionCommunicator.createQuestion("Czy masz nudności?"));
-         update(d);
+    	insert (new DiagnosisFact("isNausea", questionCommunicator.createQuestion("Czy masz nudności?") ));
     end
     
 rule "NavelMeal"
-	when d : DiagnosisMaster(d.isNavel() == Question.TRUE, d.isMeal() == Question.NOT_ASKED)
+	when 
+    	d : DiagnosisFact(d.name.equals("isNavel"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isMeal")))
     then
-         d.setMeal(questionCommunicator.createQuestion("Czy ból związany jest z posiłkami?"));
-         update(d);
+    	insert (new DiagnosisFact("isMeal", questionCommunicator.createQuestion("Czy ból związany jest z posiłkami?")));
     end
 
 rule "NauseaGastrologist"
-    when d : DiagnosisMaster(d.isNausea() == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isNausea"), d.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u gastrologa");
        drools.halt();
     end    
 
 rule "MealGastrologist"
-    when d : DiagnosisMaster(d.isMeal() == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isMeal"), d.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u gastrologa");
        drools.halt();
     end    
 
 rule "NavelSoreThroat"
-	when d : DiagnosisMaster(d.isNavel() == Question.TRUE, d.isSoreThroat() == Question.NOT_ASKED)
+	when 
+    	d : DiagnosisFact(d.name.equals("isNavel"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isSoreThroat")))
     then
-         d.setSoreThroat(questionCommunicator.createQuestion("Czy odczuwasz ból gardła?"));
-         update(d);
+    	insert (new DiagnosisFact("isSoreThroat", questionCommunicator.createQuestion("Czy odczuwasz ból gardła?")));
     end  
     
 rule "SoreThroatPhysician"
-    when d : DiagnosisMaster(d.isSoreThroat() == Question.TRUE, d.isOverEighteeen() == Question.FALSE)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSoreThroat"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isOverEighteen"), status == Question.FALSE))
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u pediatry");
        drools.halt();
     end  
     
 rule "AbdomenVoiding"
-	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isVoiding() == Question.NOT_ASKED)
+	when 
+    	d : DiagnosisFact(d.name.equals("isAbdomen"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isVoiding")))
     then
-         d.setVoiding(questionCommunicator.createQuestion("Czy masz problemy z mikcją?"));
-         update(d);
+    	insert (new DiagnosisFact("isVoiding", questionCommunicator.createQuestion("Czy masz problemy z mikcją?") ));
     end
     
 rule "AbdomenRadiatingPain"
-	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isRadiatingPain() == Question.NOT_ASKED)
+	when 
+    	d : DiagnosisFact(d.name.equals("isAbdomen"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isRadiatingPain")))
     then
-         d.setRadiatingPain(questionCommunicator.createQuestion("Czy ból ma charakter promieniujący?"));
-         update(d);
+    	 insert (new DiagnosisFact("isRadiatingPain", questionCommunicator.createQuestion("Czy ból ma charakter promieniujący?")));
     end
     
 rule "RadiatingPainUrologist"
-    when d : DiagnosisMaster(d.isRadiatingPain() == Question.TRUE, d.isVoiding() == Question.TRUE)
+    when
+    	d1 : DiagnosisFact(d1.name.equals("isRadiatingPain"), d1.status == Question.TRUE)
+    	d2 : DiagnosisFact(d1.name.equals("isVoiding"), d2.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u urologa");
        drools.halt();
     end  
     
 rule "VoidingUrologist"
-    when d : DiagnosisMaster(d.isVoiding() == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isVoiding"), d.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u urologa");
        drools.halt();
     end 
 
 rule "AbdomenGenialTractBleeding"
-	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isGenialTractBleeding() == Question.NOT_ASKED, d.getSex() == "kobieta")
+	when 
+    	d1 : DiagnosisFact(d1.name.equals("isAbdomen"), d1.status == Question.TRUE)
+    	d2 : DiagnosisFact(d2.name.equals("isSex"), d2.expansion.equals("kobieta"))
+    	not (exists DiagnosisFact(name.equals("isGenialTracktBleeding")))
     then
-         d.setGenialTractBleeding(questionCommunicator.createQuestion("Czy pojawiają się patologiczne krwawienia z dróg rodnych?"));
-         update(d);
+    	insert (new DiagnosisFact("isGenialTrackBleeding", questionCommunicator.createQuestion("Czy pojawiają się patologiczne krwawienia z dróg rodnych?")));
     end
     
 rule "AbdomenMenstrualCycleDisorder"
-	when d : DiagnosisMaster(d.isAbdomen() == Question.TRUE, d.isMenstrualCycleDisorder() == Question.NOT_ASKED, d.getSex() == "kobieta")
+	when 
+    	d1 : DiagnosisFact(d1.name.equals("isAbdomen"), d1.status == Question.TRUE)
+    	d2 : DiagnosisFact(d2.name.equals("isSex"), d2.expansion.equals("kobieta"))
+    	not (exists DiagnosisFact(name.equals("isMenstrualCycleDisorder")))
     then
-         d.setMenstrualCycleDisorder(questionCommunicator.createQuestion("Czy pojawiają się zaburzenia cyklu miesiączkowego?"));
-         update(d);
+    	insert (new DiagnosisFact("isMenstrualCycleDisorder", questionCommunicator.createQuestion("Czy pojawiają się zaburzenia cyklu miesiączkowego?")));
     end
     
 rule "MenstrualCycleDisorderGynecologist"
-    when d : DiagnosisMaster(d.isMenstrualCycleDisorder() == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isMenstrualCycleDisorder"), d.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u ginekologa");
        drools.halt();
     end 
 
 rule "GenialTractBleedingGynecologist"
-    when d : DiagnosisMaster(d.isGenialTractBleeding() == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isGenialTractBleeding"), d.status == Question.TRUE)
     then
        questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u ginekologa");
        drools.halt();
     end 
     
 rule "SinusesAcheLongLastingCold"
-    when d : DiagnosisMaster(d.isSinusesAche() == Question.TRUE, d.isLongLastingCold() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSunusesAche"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isLongLastingCold")))
     then
-        d.setLongLastingCold(questionCommunicator.createQuestion("Czy masz długotrwały katar i często kichasz?"));
-        update(d);
+    	insert (new DiagnosisFact("isLongLastingCold", questionCommunicator.createQuestion("Czy masz długotrwały katar i często kichasz?")));
     end
     
 rule "SinusesAcheSoreThroat"
-    when d : DiagnosisMaster(d.isSinusesAche() == Question.TRUE, d.isSoreThroat() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isSunusesAche"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isSoreThroat")))
     then
-        d.setSoreThroat(questionCommunicator.createQuestion("Czy odczuwasz ból gardła?"));
-        update(d);
+    	insert (new DiagnosisFact("isSoreThroat", questionCommunicator.createQuestion("Czy odczuwasz ból gardła?")));
     end
     
 rule "EarsAcheBlockedUpEars"
-    when d : DiagnosisMaster(d.isEarsAche() == Question.TRUE, d.isBlockedUpEars() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isEarsAche"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isBlockedUpEars")))
     then
-        d.setBlockedUpEars(questionCommunicator.createQuestion("Czy czujesz, że Twoje uszy się zapychają?"));
-        update(d);
+    	insert (new DiagnosisFact("isBlockedUpEars", questionCommunicator.createQuestion("Czy czujesz, że Twoje uszy się zapychają?")));
     end
     
 rule "EarsAcheSoreThroat"
-    when d : DiagnosisMaster(d.isEarsAche() == Question.TRUE, d.isSoreThroat() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isEarsAche"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isSoreThroat")))
     then
-        d.setSoreThroat(questionCommunicator.createQuestion("Czy odczuwasz ból gardła?"));
-        update(d);
+    	insert (new DiagnosisFact("isSoreThroat", questionCommunicator.createQuestion("Czy odczuwasz ból gardła?")));
     end
     
 rule "SinusesAcheLongLastingColdEarAcheLaryngologist"
-    when d : DiagnosisMaster( d.isLongLastingCold == Question.TRUE, d.isEarsAche() == Question.TRUE)
+    when 
+    	d1 : DiagnosisFact(d1.name.equals("isLongLastingCold"), d1.status == Question.TRUE)
+    	d2 : DiagnosisFact(d2.name.equals("isEarsAche"), d2.status == Question.TRUE)
     then
         questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u laryngologa");
         drools.halt();
     end
 rule "SinueseAcheLongLastingColdSoreThroatLaryngologist"
-    when d : DiagnosisMaster( d.isLongLastingCold == Question.TRUE, d.isSoreThroat() == Question.TRUE)
+    when
+    	d1 : DiagnosisFact(d1.name.equals("isLongLastingCold"), d1.status == Question.TRUE)
+    	d2 : DiagnosisFact(d2.name.equals("isSoreThroat"), d2.status == Question.TRUE)
     then
         questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u laryngologa");
         drools.halt();
     end
 rule "SinueseAcheEarAcheSoreThroatLaryngologist"
-    when d : DiagnosisMaster( d.isEarsAche == Question.TRUE, d.isSoreThroat() == Question.TRUE)
+    when
+    	d1 : DiagnosisFact(d1.name.equals("isEarsAche"), d1.status == Question.TRUE)
+    	d2 : DiagnosisFact(d2.name.equals("isSoreThroat"), d2.status == Question.TRUE)
     then
         questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u laryngologa");
         drools.halt();
     end
     
 rule "BlockedUpEarsLaryngologist"
-    when d : DiagnosisMaster( d.isBlockedUpEars == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isBlockedUpEars"), d.status == Question.TRUE)
     then
         questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u laryngologa");
         drools.halt();
     end
 
 rule "BloodPressureNeuralgia"
-    when d : DiagnosisMaster( d.isBloodPressure == Question.TRUE, d.isNeuralgia() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isBloodPressure"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isNeuralgia")))
     then
-       	d.setNeuralgia(questionCommunicator.createQuestion("Czy odczuwasz nerwobóle?"));
-    	update(d);
+    	insert (new DiagnosisFact("isNauralgia", questionCommunicator.createQuestion("Czy odczuwasz nerwobóle?")));
     end 
     
 rule "MigraineNeuralgia"
-    when d : DiagnosisMaster( d.isMigraine == Question.TRUE, d.isNeuralgia() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isMigraine"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isNeuralgia")))
     then
-      	d.setNeuralgia(questionCommunicator.createQuestion("Czy odczuwasz nerwobóle?"));
-    	update(d);
+    	insert (new DiagnosisFact("isneuralgia", questionCommunicator.createQuestion("Czy odczuwasz nerwobóle?")));
     end 
     
 rule "BloodPressureDiabetes"
-    when d : DiagnosisMaster( d.isBloodPressure == Question.TRUE, d.isDiabetes() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isBloodPressure"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isDiabetes")))
     then
-       	d.setDiabetes(questionCommunicator.createQuestion("Czy masz cukrzycę?"));
-    	update(d);
+    	insert (new DiagnosisFact("isDiabetes", questionCommunicator.createQuestion("Czy masz cukrzycę?")));
     end 
     
 rule "MigraineDiabetes"
-    when d : DiagnosisMaster( d.isMigraine == Question.TRUE, d.isDiabetes() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isMigraine"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isDiabetes")))
     then
-      	 d.setDiabetes(questionCommunicator.createQuestion("Czy masz cukrzycę?"));
-   		update(d);
+    	insert (new DiagnosisFact("isDiabetes", questionCommunicator.createQuestion("Czy masz cukrzycę?")));
     end 
     
 rule "DiabetesNeurologist"
-    when d : DiagnosisMaster( d.isDiabetes == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isDiabetes"), d.status == Question.TRUE)
     then
         questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u neurologa");
         drools.halt();
     end
     
 rule "NeuralgiaNeurologist"
-    when d : DiagnosisMaster( d.isNeuralgia == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isNeuralgia"), d.status == Question.TRUE)
     then
         questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u neurologa");
         drools.halt();
     end
     
 rule "EyesightOneSidedHeadAche"
-    when d : DiagnosisMaster( d.isEyesight == Question.TRUE, d.isOneSidedHeadAche() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isEyesight"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isOneSidedHeadAche")))
     then
-       	d.setOneSidedHeadAche(questionCommunicator.createQuestion("Czy miewasz jednostronne bóle głowy?"));
-    	update(d);
+    	insert (new DiagnosisFact("isOneSideHeadAche", questionCommunicator.createQuestion("Czy miewasz jednostronne bóle głowy?")));
     end
     
 rule "EyesightFogSight"
-    when d : DiagnosisMaster( d.isEyesight == Question.TRUE, d.isFogSight() == Question.NOT_ASKED)
+    when 
+    	d : DiagnosisFact(d.name.equals("isEyesight"), d.status == Question.TRUE)
+    	not (exists DiagnosisFact(name.equals("isFogSight")))
     then
-       	d.setFogSight(questionCommunicator.createQuestion("Czy widzisz jakby przez mgłę?"));
-    	update(d);
+    	insert (new DiagnosisFact("isFogSight", questionCommunicator.createQuestion("Czy widzisz jakby przez mgłę?")));
     end  
 
 rule "FogSightOculist"
-    when d : DiagnosisMaster( d.isFogSight == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isFogSight"), d.status == Question.TRUE)
     then
         questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u okulisty");
         drools.halt();
     end
     
 rule "OneSidedHeadAcheOculist"
-    when d : DiagnosisMaster( d.isOneSidedHeadAche == Question.TRUE)
+    when d : DiagnosisFact(d.name.equals("isOneSidedHeadAche"), d.status == Question.TRUE)
     then
         questionCommunicator.createNoCallbackNotification("Zaleca się wizytę u okulisty");
         drools.halt();
