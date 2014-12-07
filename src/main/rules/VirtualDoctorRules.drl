@@ -100,7 +100,7 @@ rule "SteppedUpBreath"
 rule "BloodPressure"
     when s : String(s == "złe ciśnienie tętnicze")
     then
-        insert (new DiagnosisFact("isBloodPresure", true));
+        insert (new DiagnosisFact("isBloodPressure", true));
     end
 
 rule "Abdomen"
