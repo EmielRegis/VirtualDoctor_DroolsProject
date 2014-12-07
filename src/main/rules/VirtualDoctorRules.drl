@@ -454,7 +454,7 @@ rule "GenialTractBleedingGynecologist"
     
 rule "SinusesAcheLongLastingCold"
     when 
-    	d : DiagnosisFact(d.name.equals("isSunusesAche"), d.status == Question.TRUE)
+    	d : DiagnosisFact(d.name.equals("isSinusesAche"), d.status == Question.TRUE)
     	not (exists DiagnosisFact(name.equals("isLongLastingCold")))
     then
     	insert (new DiagnosisFact("isLongLastingCold", questionCommunicator.createQuestion("Czy masz długotrwały katar i często kichasz?")));
@@ -462,7 +462,7 @@ rule "SinusesAcheLongLastingCold"
     
 rule "SinusesAcheSoreThroat"
     when 
-    	d : DiagnosisFact(d.name.equals("isSunusesAche"), d.status == Question.TRUE)
+    	d : DiagnosisFact(d.name.equals("isSinusesAche"), d.status == Question.TRUE)
     	not (exists DiagnosisFact(name.equals("isSoreThroat")))
     then
     	insert (new DiagnosisFact("isSoreThroat", questionCommunicator.createQuestion("Czy odczuwasz ból gardła?")));
